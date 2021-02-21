@@ -15,7 +15,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  width: 800px;
+  width: 850px;
   margin: 1.5% auto;
   background: white;
   border-radius: 5px;

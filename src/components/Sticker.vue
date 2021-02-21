@@ -15,7 +15,6 @@
       <div class="dish">
         <label for="dish"><b>Danie:</b></label>
         <b-form-select id="dish" v-model="dish" :options="dishLength">
-          >
           <template #first>
             <b-form-select-option :value="null" disabled
               >--Danie--</b-form-select-option
@@ -37,6 +36,11 @@
             {{ description }}
           </p>
           <p v-else>Wybierz danie i datę</p>
+          <!-- Доделать изменения из базы данных -->
+<div class="coldHeat"> 
+  Spożywać na cieplo/zimno
+</div>
+<!-- Доделать изменения из базы данных -->
           <div class="contains" id="span">
             <span><b>Zawiera:</b>&#8195;{{ contains || "----" }}</span>
             <span><b>Alergeny:</b>&#8195;{{ allergens || "----" }}</span>
@@ -86,10 +90,14 @@
             </div>
           </form>
         </div>
-        <h6 class="shelfLife">
+        <div class="footerInfo">
+         <span >
           Należy spożyć do:
           {{ selectedDate ? setShelfLifeDate : "----" }}
-        </h6>
+        </span>
+        <span>Przechowywać w temperaturze:&nbsp;4-6&#176;C</span>
+        </div>
+        
       </div>
       <div class="changeInfo">
         <b-button
@@ -98,6 +106,7 @@
           size="sm"
           title="Edytuj danę na naklejcę"
           class="mb-2"
+          :disabled="!description"
         >
           <b-icon icon="pencil-square" aria-hidden="true"></b-icon>
           Edytować
@@ -226,23 +235,25 @@ export default {
     },
     printout() {
       var newWindow = window.open();
-      let stylesMain = ".print{width:200px; height:200px; font-family:	Arial}";
+      let stylesMain = ".print{width:200px; height:200px; font-family:	Arial; margin-top:60px}";
       let stylesIdSpan = " #span{display:flex; flex-direction: column;}";
-      let styleh3 = "h3{font-weight: 400; margin:10px}";
-      let styleh6 = "h6{margin:10px font-size:8px}";
-      let styleP = "p{font-size:10px; margin:10px; padding:10px}";
-      let styleSpan = "span{font-size:8px; margin:0px 10px 5px 10px}";
-      let styleShelfLife =
-        ".shelfLife{font-size:8px; position:relative; top:20px; left:50px}";
+      let styleh3 = "h3{font-weight: 400; margin:0px 0px 2px 10px; font-size:15px}";
+      let styleh6 = "h6{margin: 5px 20px; font-size:9px;}";
+      let styleP = "p{font-size:10px; margin:10px; }";
+      let styleColdHeat =".coldHeat{font-size:7px; margin:0px 2px 5px 10px}"
+      let styleSpan = "span{font-size:7px; margin:0px 2px 5px 10px}";
+      let styleFooterInfo =
+        ".footerInfo{font-size:7px; position:relative; top:10px; left:50px; display:flex; flex-direction:column}";
       newWindow.document.write(
         `<style>${
           stylesMain +
+          styleColdHeat+
           stylesIdSpan +
           styleh3 +
           styleh6 +
           styleP +
           styleSpan +
-          styleShelfLife
+          styleFooterInfo
         }</style>`
       );
       newWindow.document.write('<div class="print">');
@@ -311,11 +322,6 @@ body {
     margin: 10px 20px;
     font-size: 14px;
   }
-  .shelfLife {
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-  }
 }
 img:hover {
   cursor: pointer;
@@ -349,5 +355,17 @@ textarea {
   .buttPos {
     margin: 10px;
   }
+}
+.footerInfo{
+  margin:20px;
+  font-size: 10px;
+     display: flex;
+     flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+.coldHeat{
+  font-size: 10px;
+  margin-left: 20px;
 }
 </style>

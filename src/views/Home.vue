@@ -9,7 +9,7 @@
       ></b-spinner>
     </div>
     <div v-else class="home">
-      <DietsList v-bind:allDiets="getState.diets" />
+      <DietsList v-bind:allDiets="getState.diets" v-bind:snackBar="getState.snackBar" />
       <Sticker
         v-bind:dishData="getState.dishData"
         v-bind:getActiveForm="getState.activeForm"

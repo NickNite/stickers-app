@@ -12,8 +12,30 @@ export default new Vuex.Store({
     diets: {
       slim: [1200, 1500, 2000, 2500],
       sport: [1200, 1500, 2000, 2500, 3000, 3500],
-      vege: [1200, 1500, 2000, 2500],
-      'vege+fish': [1200, 1500, 2000, 2500]
+      wege: [1200, 1500, 2000, 2500],
+      'wege+fish': [1200, 1500, 2000, 2500],
+      Gain:['X1','X2','X3','X4','X5'], //Cюда добавляем только 3 и 4 блюда из Sport
+      Office:['Pakiet M', 'Pakiet XL'],
+      'Office-Wege':['Pakiet M','Pakiet XL'],
+      'Slim-Bez laktozy':[1200,1500,2000,2500],
+      'Slim-Bez glutenu':[1200,1500,2000,2500],
+      'Slim-Bez laktozy i glutenu': [1200,1500,2000,2500],
+      Keto:[1500,2200,3000],
+      'Keto-Wege+Fish':[1500,2200,3000],
+      'Keto-Low Carb':[1500,2200,3000],
+      'Zdrowy Obiadek':[''],
+      'Zdrowy Obiadek WEGE':[''],
+      'Zdrowy Obiadek+Deser':[''],
+      'Zdrowy Obiadek+Deser WEGE':[''],
+      'Zdrowy Obiadek+Zupa':[''],
+      'Śniadanie+Obiad+Kolacja':['M','XL'],
+      'Śniadanie+Obiad+Kolacja WEGE':['M','XL'],
+    },
+    snackBar:{
+Baton:['1-M','2-M'],
+Deser:['M','XL'],
+Kanapka:[],
+Zupa:['M','XL']
     },
     dishData: {
       // '2021-01-21': {
