@@ -13,6 +13,7 @@
       <Sticker
         v-bind:dishData="getState.dishData"
         v-bind:getActiveForm="getState.activeForm"
+        v-bind:getDishType="getState.dishType"
       />
     </div>
     <div class="link"><router-link to="/addInfo">Dodaj nowe</router-link></div>

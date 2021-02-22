@@ -3,6 +3,7 @@
          <b-form-group
     class="radio"
       v-slot="{ ariaDescribedby }"
+      
     >
       <b-form-radio-group
         id="btn-radios-2"
@@ -12,9 +13,11 @@
         button-variant="outline-primary"
         size="lg"
         name="radio-btn-outline"
+        
         buttons
       ></b-form-radio-group>
     </b-form-group>
+     <h4>{{dishType}}</h4>
     <b-list-group>
       <b-list-group-item
         class="diet"
@@ -37,19 +40,17 @@ export default {
   data: () => ({
     dietsList: [],
     active: "",
-    dishType:"",
+    dishType:"Diety",
     dishList:['Diety', 'Snack Bar']
   }),
-  created() {
+  mounted() {
     this.dietsList = this.setDiets;
-    console.log('test1')
   },
-  beforeUpdate() {
-    if(!this.dishType){
-    console.log('test2')
+updated(){
+  //Меняем тип продукта(диеты или снек бар)
 this.dietsList = this.setDiets;
-    }
-  },
+this.changeDishType(this.dishType)
+},
   computed: {
     setDiets() {
       let dietsList = [];
@@ -61,6 +62,7 @@ this.dietsList = this.setDiets;
       }
       }
       if(this.dishType==="Snack Bar"){
+        this.setDishType(this.dishType)
  for (let diet in this.snackBar) {
         for (let calories of this.snackBar[diet]) {
           dietsList.push(diet + " " + calories);
@@ -71,11 +73,16 @@ this.dietsList = this.setDiets;
     },
   },
   methods: {
-    ...mapActions(["setActiveForm"]),
+    ...mapActions(["setActiveForm", "setDishType"]),
     activeDiet() {
+      //Изменяем тип диеты(слим,спорт)
       this.active = event.target.innerHTML;
       this.setActiveForm(this.active);
     },
+    changeDishType(){
+      //Изменяем тип продукта(диета,бар)
+      this.setDishType(this.dishType)
+    }
   },
 };
 </script>
@@ -85,7 +92,7 @@ this.dietsList = this.setDiets;
   margin-left: -1px;
   width: 250px;
   border-right: 1px solid rgb(218, 218, 218);
-  max-height: 685px;
+  height: 700px;
   overflow-y: scroll;
 }
 ul {

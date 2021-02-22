@@ -9,14 +9,15 @@ export default new Vuex.Store({
   state: {
     loading: true,
     activeForm: '',
+    dishType:'',
     diets: {
-      slim: [1200, 1500, 2000, 2500],
-      sport: [1200, 1500, 2000, 2500, 3000, 3500],
-      wege: [1200, 1500, 2000, 2500],
-      'wege+fish': [1200, 1500, 2000, 2500],
+      Slim: [1200, 1500, 2000, 2500],
+      Sport: [1200, 1500, 2000, 2500, 3000, 3500],
+      Wege: [1200, 1500, 2000, 2500],
+      'Wege+fish': [1200, 1500, 2000, 2500],
       Gain:['X1','X2','X3','X4','X5'], //Cюда добавляем только 3 и 4 блюда из Sport
-      Office:['Pakiet M', 'Pakiet XL'],
-      'Office-Wege':['Pakiet M','Pakiet XL'],
+      Office:['Pakiet-M', 'Pakiet-XL'],
+      'Office-Wege':['Pakiet-M','Pakiet-XL'],
       'Slim-Bez laktozy':[1200,1500,2000,2500],
       'Slim-Bez glutenu':[1200,1500,2000,2500],
       'Slim-Bez laktozy i glutenu': [1200,1500,2000,2500],
@@ -24,12 +25,12 @@ export default new Vuex.Store({
       'Keto-Wege+Fish':[1500,2200,3000],
       'Keto-Low Carb':[1500,2200,3000],
       'Zdrowy Obiadek':[''],
-      'Zdrowy Obiadek WEGE':[''],
+      'Zdrowy Obiadek-Wege':[''],
       'Zdrowy Obiadek+Deser':[''],
-      'Zdrowy Obiadek+Deser WEGE':[''],
+      'Zdrowy Obiadek+Deser Wege':[''],
       'Zdrowy Obiadek+Zupa':[''],
       'Śniadanie+Obiad+Kolacja':['M','XL'],
-      'Śniadanie+Obiad+Kolacja WEGE':['M','XL'],
+      'Śniadanie+Obiad+Kolacja Wege':['M','XL'],
     },
     snackBar:{
 Baton:['1-M','2-M'],
@@ -174,6 +175,9 @@ Zupa:['M','XL']
   },
   mutations: {
     //тут прописываем логику
+    changeDishType(state, typed){
+      state.dishType = typed;
+    },
     newActiveForm(state, form) {
       state.activeForm = form;
     },
@@ -219,6 +223,9 @@ Zupa:['M','XL']
     },
     setActiveForm({ commit }, form) {
       commit('newActiveForm', form)
+    },
+    setDishType({commit}, typed){
+      commit('changeDishType', typed)
     },
     setDishInfo({ commit }, payload) {
       commit('setDishData', payload);

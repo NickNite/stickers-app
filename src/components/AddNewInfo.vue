@@ -67,10 +67,17 @@
         >
       </div>
       <footer>
-        <div class="slim">
+          <b-form-checkbox
+           v-for="(diet,i) in getDietForm" :key="{ diet } + i"
+            :id="diet"
+            :value="diet"
+            v-model="newDiets.dietsTitle"
+            >{{diet}}</b-form-checkbox
+          >
+        <!-- <div class="slim">
           <b-form-checkbox
             id="slim"
-            value="slim"
+            value="Slim"
             v-model="$v.newDiets.dietsTitle.$model"
             >Slim</b-form-checkbox
           >
@@ -78,27 +85,115 @@
         <div class="sport">
           <b-form-checkbox
             id="sport"
-            value="sport"
+            value="Sport"
             v-model="newDiets.dietsTitle"
             >Sport</b-form-checkbox
           >
         </div>
         <div class="vege">
           <b-form-checkbox
-            id="vege"
-            value="vege"
+            id="wege"
+            value="Wege"
             v-model="$v.newDiets.dietsTitle.$model"
-            >Vege</b-form-checkbox
+            >Wege</b-form-checkbox
           >
         </div>
         <div class="vege_fish">
           <b-form-checkbox
-            id="vege_fish"
-            value="vege_fish"
+            id="wege+fish"
+            value="Wege+fish"
             v-model="$v.newDiets.dietsTitle.$model"
-            >Vege+Fish</b-form-checkbox
+            >Wege+Fish</b-form-checkbox
           >
         </div>
+        <div class="gain">
+          <b-form-checkbox
+            id="gain"
+            value="Gain"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Gain</b-form-checkbox
+          >
+        </div>
+        <div class="office">
+          <b-form-checkbox
+            id="office"
+            value="Office"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Office</b-form-checkbox
+          >
+        </div>
+        <div class="office-wege">
+          <b-form-checkbox
+            id="office-wege"
+            value="Office-Wege"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Office-Wege</b-form-checkbox
+          >
+        </div>
+        <div class="slimBezLaktozy">
+          <b-form-checkbox
+            id="slimBezLaktozy"
+            value="Slim-Bez laktozy"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Bez laktozy</b-form-checkbox
+          >
+        </div>
+        <div class="slimBezGlutenu">
+          <b-form-checkbox
+            id="slimBezGlutenu"
+            value="Slim-Bez glutenu"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Bez glutenu</b-form-checkbox
+          >
+        </div>
+        <div class="slimBezLaktozyiGlutenu">
+          <b-form-checkbox
+            id="slimBezLaktozyiGlutenu"
+            value="Slim-Bez laktozy i glutenu"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Bez lakt i glut</b-form-checkbox
+          >
+        </div>
+        <div class="keto">
+          <b-form-checkbox
+            id="keto"
+            value="Keto"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Keto</b-form-checkbox
+          >
+        </div>
+        <div class="ketoWegeFish">
+          <b-form-checkbox
+            id="ketoWegeFish"
+            value="Keto-Wege+Fish"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Keto-Wege+Fish</b-form-checkbox
+          >
+        </div>
+        <div class="ketoLowCarbh">
+          <b-form-checkbox
+            id="ketoLowCarbh"
+            value="Keto-Low Carb"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Keto-Low Carb</b-form-checkbox
+          >
+        </div>
+        <div class="zdrowyObiadek">
+          <b-form-checkbox
+            id="zdrowyObiadek"
+            value="Zdrowy Obiadek"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Zdrowy Obiadek</b-form-checkbox
+          >
+        </div>
+        <div class="zdrowyObiadekWege">
+          <b-form-checkbox
+            id="zdrowyObiadekWege"
+            value="Zdrowy Obiadek-Wege"
+            v-model="$v.newDiets.dietsTitle.$model"
+            >Zdrowy Obiadek-Wege</b-form-checkbox
+          >
+        </div> -->
       </footer>
       <b-button
         class="buttonSend"
@@ -140,7 +235,7 @@ import { mapActions } from "vuex";
 import { required } from "vuelidate/lib/validators";
 export default {
   name: "AddNewInfo",
-  props: [],
+  props: ["allDiets"],
   data: () => ({
     submitStatus: "ERROR",
     variant: null,
@@ -208,6 +303,13 @@ export default {
 
       return [max, min];
     },
+    getDietForm(){
+      let forms =[];
+      for(let key in this.allDiets){
+        forms.push(key);
+      }
+return forms;
+    },
   },
   methods: {
     ...mapActions(["addNewDiets", "getDishDate"]),
@@ -258,6 +360,7 @@ header {
 footer {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   margin-top: 50px;
   div {
     margin: 5px;

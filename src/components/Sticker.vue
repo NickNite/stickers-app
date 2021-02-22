@@ -1,9 +1,9 @@
 <template>
-  <div class="hello">
+  <div class="mainSticker">
     <header>
       <div class="date">
         <label for="date"><b>Data:</b></label>
-        <b-form-select id="date" v-model="selectedDate" :options="dateLength">
+        <b-form-select id="date" v-model="selectedDate" :options="dateLength" :disabled="redactMode">
           >
           <template #first>
             <b-form-select-option :value="null" disabled
@@ -14,7 +14,7 @@
       </div>
       <div class="dish">
         <label for="dish"><b>Danie:</b></label>
-        <b-form-select id="dish" v-model="dish" :options="dishLength">
+        <b-form-select id="dish" v-model="dish" :options="dishLength" :disabled="getDishType=='Snack Bar' || redactMode">
           <template #first>
             <b-form-select-option :value="null" disabled
               >--Danie--</b-form-select-option
@@ -24,13 +24,21 @@
       </div>
     </header>
     <body>
-      <div class="sticker" id="sticker">
-        <h3>
+      
+      <div class="sticker">
+        <div  id="sticker">
+       <div class="headSticker"> 
+         <div>
+         <h3>
           {{
             getActiveForm ? getActiveForm.toUpperCase() : "Wybierz rodzaj diety"
           }}
         </h3>
-        <h6><b>Posiłek:&#8195;</b>{{ dish ? dish + "/5" : "-/5" }}</h6>
+        <h6 v-if="getDishType!=='Snack Bar'"><b>Posiłek:&#8195;</b>{{ dish ? dish + "/5" : "-/5" }}</h6>
+         </div>
+         <div><img src="@/assets/slim1.png" /></div>
+   
+       </div>
         <div v-if="!redactMode">
           <p v-if="description">
             {{ description }}
@@ -97,7 +105,12 @@
         </span>
         <span>Przechowywać w temperaturze:&nbsp;4-6&#176;C</span>
         </div>
-        
+      </div>
+      <div class="footerSticker">
+        <span class="footerRed">www.dietyodbrokula.pl</span>
+        <span class="footerGreen">kontakt@dietyodbrokula.pl, tel.58 727 22 22</span>
+        <span class="footerGreen">Zakopiańska 1, 84-230 Rumia</span>
+      </div>
       </div>
       <div class="changeInfo">
         <b-button
@@ -143,7 +156,7 @@ export default {
     contains: "",
     allergens: "",
   }),
-  props: ["dishData", "getActiveForm"],
+  props: ["dishData", "getActiveForm","getDishType"],
   created() {
     for (let date in this.dishData) {
       this.dateLength.push(date);
@@ -151,36 +164,26 @@ export default {
   },
   beforeUpdate() {
     //Отображаем количество блюд по определнной дате
-    if (this.dishData[this.selectedDate].length != this.dishLength.length) {
+    if (this.dishData[this.selectedDate] && this.dishData[this.selectedDate].length != this.dishLength.length) {
       this.dishLength = [];
       for (let i = 1; i < this.dishData[this.selectedDate].length; i++) {
         if (this.dishData[this.selectedDate][i] != null) {
           this.dishLength.push(i);
         }
       }
-    } else {
+    } else if(this.dishData[this.selectedDate]) {
       for (let i = 1; i < this.dishData[this.selectedDate].length; i++) {
         if (this.dishData[this.selectedDate][i] != null) {
           this.dishLength.push(i);
         }
       }
-    }
-
-    //Выводим тип диеты(слим,спорт)
-    this.form = this.getActiveForm.split(" ")[0];
-
-    //Отображаем данные из БД если нету режима редактирования
-    if (!this.redactMode) {
-      this.description = this.dishData[this.selectedDate][this.dish][
-        this.form
-      ].description;
-      this.contains = this.dishData[this.selectedDate][this.dish][
-        this.form
-      ].contains;
-      this.allergens = this.dishData[this.selectedDate][this.dish][
-        this.form
-      ].allergens;
-    }
+    };
+   
+    this.form = this.transformDietForm(this.getActiveForm);
+  
+    this.description = this.setDishDate.descr;
+    this.contains=this.setDishDate.cont;
+    this.allergens=this.setDishDate.allerg;
   },
   computed: {
     //Определяем срок годности товара от выбраной даты
@@ -210,9 +213,39 @@ export default {
       let shelfLife = shelfDay + "-" + shelfMonth + "-" + shelfYear;
       return shelfLife;
     },
+    setDishDate(){
+       //Отображаем данные из БД если нету режима редактирования и проходит проверку на присутствие данных
+      let descr= '';
+      let cont = '';
+      let allerg='';
+      if (!this.redactMode && this.dishData[this.selectedDate] && this.dishData[this.selectedDate][this.dish] && this.dishData[this.selectedDate][this.dish][
+        this.form
+      ]) {
+      descr = this.dishData[this.selectedDate][this.dish][
+        this.form
+      ].description;
+      cont = this.dishData[this.selectedDate][this.dish][
+        this.form
+      ].contains;
+      allerg = this.dishData[this.selectedDate][this.dish][
+        this.form
+      ].allergens;
+    }if(this.redactMode){
+      descr=this.description;
+      cont = this.contains;
+      allerg = this.allergens;
+    }
+    
+    return {descr, cont, allerg};
+    }
   },
   methods: {
     ...mapActions(["setDishInfo"]),
+    transformDietForm(oldForm){
+      //Делаем из названия диеты, форму диеты для обработки запросов
+let newForm = oldForm.split(' ').slice(0,-1);
+return newForm.join(' ');
+    },
     redactModeOn() {
       this.redactMode = true;
     },
@@ -234,10 +267,11 @@ export default {
       this.redactMode = false;
     },
     printout() {
+      let img = document.querySelector('.headSticker img');
       var newWindow = window.open();
-      let stylesMain = ".print{width:200px; height:200px; font-family:	Arial; margin-top:60px}";
+      let stylesMain = ".print{width:200px; height:200px; font-family:	Arial; margin-top:20px}";
       let stylesIdSpan = " #span{display:flex; flex-direction: column;}";
-      let styleh3 = "h3{font-weight: 400; margin:0px 0px 2px 10px; font-size:15px}";
+      let styleh3 = "h3{font-weight: 400; margin:30px 0px 2px 10px; font-size:15px}";
       let styleh6 = "h6{margin: 5px 20px; font-size:9px;}";
       let styleP = "p{font-size:10px; margin:10px; }";
       let styleColdHeat =".coldHeat{font-size:7px; margin:0px 2px 5px 10px}"
@@ -260,6 +294,7 @@ export default {
       newWindow.document.write(document.getElementById("sticker").innerHTML);
       newWindow.document.write("</div>");
       newWindow.print();
+      img.src='https://i.ibb.co/dJQLytg/slim2.png';
       newWindow.close();
     },
   },
@@ -267,7 +302,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-//Проверить еще раз функционал, собрать и задеплоить на firebase
+
 header {
   display: flex;
   margin: 40px 0px;
@@ -302,7 +337,7 @@ body {
   display: flex;
   flex-direction: column;
   text-align: left;
-
+z-index: 100;
   h3 {
     margin: 10px 30px;
     font-size: 20px;
@@ -315,6 +350,7 @@ body {
     font-size: 14px;
     margin: 10px 20px;
     word-wrap: break-word;
+    width:180px;
   }
   .contains {
     display: flex;
@@ -322,11 +358,17 @@ body {
     margin: 10px 20px;
     font-size: 14px;
   }
+  .headSticker{
+    margin-bottom: -20px;
+    display: flex;
+    justify-content: space-between;
+      img{
+      width: 100px;
+      height: 100px;
+  }
+  }
 }
-img:hover {
-  cursor: pointer;
-  opacity: 0.7;
-}
+
 .print {
   width: 200px;
   margin: 50px auto;
@@ -367,5 +409,25 @@ textarea {
 .coldHeat{
   font-size: 10px;
   margin-left: 20px;
+}
+.footerSticker{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.footerRed{
+  color:red;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0px;
+  padding:0px;
+  
+}
+.footerGreen{
+  color:green;
+  font-size: 12px;
+  margin:-3px 0 3px 0;
+  padding:0px;
 }
 </style>
