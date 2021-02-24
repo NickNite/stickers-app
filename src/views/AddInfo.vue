@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div>
-      <AddNewInfo  v-bind:allDiets="getState.diets"/>
+      <AddNewInfo  v-bind:allDiets="getState.diets" v-bind:snackBar="getState.snackBar"/>
       <div title="Wrocisz do strony drukowania" class="link">
         <router-link to="/">Wroć do glównej</router-link>
       </div>
@@ -25,7 +25,7 @@ export default {
 <style scoped lang="scss">
 .link {
   border-top: 1px solid rgb(218, 218, 218);
-  margin-top: 56px;
+  margin-top: 20px;
   padding: 20px;
   a {
     text-decoration: none;

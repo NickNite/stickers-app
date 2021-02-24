@@ -1,44 +1,45 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from 'axios';
+import {createObjectDiet, createObjectBar} from '../utils/objCreators';
 
 Vue.use(Vuex);
 
-
+//Пишем серверную часть и БД
 export default new Vuex.Store({
   state: {
     loading: true,
     activeForm: '',
     dishType:'',
     diets: {
-      Slim: [1200, 1500, 2000, 2500],
-      Sport: [1200, 1500, 2000, 2500, 3000, 3500],
-      Wege: [1200, 1500, 2000, 2500],
-      'Wege+fish': [1200, 1500, 2000, 2500],
-      Gain:['X1','X2','X3','X4','X5'], //Cюда добавляем только 3 и 4 блюда из Sport
-      Office:['Pakiet-M', 'Pakiet-XL'],
-      'Office-Wege':['Pakiet-M','Pakiet-XL'],
-      'Slim-Bez laktozy':[1200,1500,2000,2500],
-      'Slim-Bez glutenu':[1200,1500,2000,2500],
-      'Slim-Bez laktozy i glutenu': [1200,1500,2000,2500],
-      Keto:[1500,2200,3000],
-      'Keto-Wege+Fish':[1500,2200,3000],
-      'Keto-Low Carb':[1500,2200,3000],
-      'Zdrowy Obiadek':[''],
-      'Zdrowy Obiadek-Wege':[''],
-      'Zdrowy Obiadek+Deser':[''],
-      'Zdrowy Obiadek+Deser Wege':[''],
-      'Zdrowy Obiadek+Zupa':[''],
-      'Śniadanie+Obiad+Kolacja':['M','XL'],
-      'Śniadanie+Obiad+Kolacja Wege':['M','XL'],
+      // Sport: [1200, 1500, 2000, 2500, 3000, 3500],
+      // Gain:['X1','X2','X3','X4','X5'], //Cюда добавляем только 3 и 4 блюда из Sport
+      // Slim: [1200, 1500, 2000, 2500],
+      // Wege: [1200, 1500, 2000, 2500],
+      // 'Wege+fish': [1200, 1500, 2000, 2500],
+      // 'Zdrowy Obiadek':[''],
+      // 'Zdrowy Obiadek-Wege':[''],
+      // Office:['Pakiet-M', 'Pakiet-XL'],
+      // 'Office-Wege':['Pakiet-M','Pakiet-XL'],
+      // 'Śniadanie + Obiad+Kolacja':['M','XL'],
+      // 'Śniadanie + Obiad+Kolacja Wege':['M','XL'],
+      // 'Slim-Bez laktozy':[1200,1500,2000,2500],
+      // 'Slim-Bez glutenu':[1200,1500,2000,2500],
+      // 'Slim-Bez laktozy i glutenu': [1200,1500,2000,2500],
+      // 'Zdrowy Obiadek+Deser':[''],
+      // 'Zdrowy Obiadek+Deser Wege':[''],
+      // 'Zdrowy Obiadek+Zupa':[''],
+      // Keto:[1500,2200,3000],
+      // 'Keto-Wege+Fish':[1500,2200,3000],
+      // 'Keto-Low Carb':[1500,2200,3000],
     },
     snackBar:{
-Baton:['1-M','2-M'],
-Deser:['M','XL'],
-Kanapka:[],
-Zupa:['M','XL']
+// Baton:['1-M','2-M'],
+// Deser:['M','XL'],
+// Kanapka:[],
+// Zupa:['M','XL']
     },
-    dishData: {
+    dietData: { //Переименовать в dietData
       // '2021-01-21': {
       //   1: {
       //     'slim': {
@@ -172,6 +173,7 @@ Zupa:['M','XL']
       //   }
       // }
     },
+    barDate:{}
   },
   mutations: {
     //тут прописываем логику
@@ -182,6 +184,9 @@ Zupa:['M','XL']
       state.activeForm = form;
     },
     createDiets(state, newDiet) {
+      if(newDiet.dish=='Snack Bar'){
+        createObjectBar(state,newDiet)
+      }
       if (newDiet.dish == 1) {
         createObjectDiet(state, 1, newDiet)
       }
@@ -199,16 +204,25 @@ Zupa:['M','XL']
       }
     },
     getData(state, payload) {
-      state.dishData = payload;
+      state.dietData = payload;
       state.loading = false;
     },
     setDishData(state, payload) {
-      state.dishData[payload.dishInfo.date][payload.dishInfo.dish][payload.dishInfo.form].description = payload.data.description;
-      state.dishData[payload.dishInfo.date][payload.dishInfo.dish][payload.dishInfo.form].contains = payload.data.contains;
-      state.dishData[payload.dishInfo.date][payload.dishInfo.dish][payload.dishInfo.form].allergens = payload.data.allergens;
+      state.dietData[payload.dishInfo.date][payload.dishInfo.dish][payload.dishInfo.form].description = payload.data.description;
+      state.dietData[payload.dishInfo.date][payload.dishInfo.dish][payload.dishInfo.form].contains = payload.data.contains;
+      state.dietData[payload.dishInfo.date][payload.dishInfo.dish][payload.dishInfo.form].allergens = payload.data.allergens;
     }
   },
   actions: {
+    // async addDiet(){
+    //  return await axios.post('/api/diet', {dietTitle:'Sport', dietColories: this.state.diets.Sport})
+    //  .then(data=>{
+    //    console.log(data.data)
+    //  })
+    //  .catch(err=>{
+    //    console.log(err)
+    //  })
+    // },
     //а тут вызываем нужную мутацию и производим изменения в стейте
     async getDishDate({ commit }) {
       return await axios.get('https://brokul-stikers-default-rtdb.firebaseio.com/dishDate.json')
@@ -219,7 +233,13 @@ Zupa:['M','XL']
     },
     addNewDiets({ commit }, newDiet) {
       commit('createDiets', newDiet);
-      return axios.put('https://brokul-stikers-default-rtdb.firebaseio.com/dishDate.json', this.state.dishData)
+      if(newDiet.dish ==' Snack Bar'){
+        return axios.put('https://brokul-stikers-default-rtdb.firebaseio.com/barDate.json', this.state.barDate)       
+      }
+      else{
+        return axios.put('https://brokul-stikers-default-rtdb.firebaseio.com/dishDate.json', this.state.dietData)
+      }
+      
     },
     setActiveForm({ commit }, form) {
       commit('newActiveForm', form)
@@ -229,7 +249,7 @@ Zupa:['M','XL']
     },
     setDishInfo({ commit }, payload) {
       commit('setDishData', payload);
-      return axios.put('https://brokul-stikers-default-rtdb.firebaseio.com/dishDate.json', this.state.dishData)
+      return axios.put('https://brokul-stikers-default-rtdb.firebaseio.com/dishDate.json', this.state.dietData)
     }
   },
   modules: {},
@@ -239,47 +259,3 @@ Zupa:['M','XL']
     },
   }
 });
-function createObjectDiet(state, arrKey, diet) { // Проверяем наличие данных, при отсутствии создаем, если есть то добавляем новые данные в старый объект
-  let date = diet.date;
-  let newForm = diet.dietsTitle;
-  if (!state.dishData[date]) {
-    state.dishData[date] = [];
-    for (let i = 0; i < 1; i++) {
-      state.dishData[date][arrKey] = {} // this
-      for (let form of newForm) {
-        state.dishData[date][arrKey][form] = {
-          date: diet.date,
-          description: diet.description,
-          contains: diet.contains,
-          allergens: diet.allergens
-        };
-      }
-    }
-
-  }
-  else {
-    for (let i = 0; i < 1; i++) {
-      if (!state.dishData[date][arrKey]) {
-        state.dishData[date][arrKey] = {}
-        for (let form of newForm) {
-          state.dishData[date][arrKey][form] = {
-            date: diet.date,
-            description: diet.description,
-            contains: diet.contains,
-            allergens: diet.allergens
-          };
-        }
-      } else {
-        for (let form of newForm) {
-          state.dishData[date][arrKey][form] = {
-            date: diet.date,
-            description: diet.description,
-            contains: diet.contains,
-            allergens: diet.allergens
-          };
-        }
-      }
-    }
-  };
-  console.log(state.dishData);
-}

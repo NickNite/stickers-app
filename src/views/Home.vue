@@ -11,7 +11,8 @@
     <div v-else class="home">
       <DietsList v-bind:allDiets="getState.diets" v-bind:snackBar="getState.snackBar" />
       <Sticker
-        v-bind:dishData="getState.dishData"
+        v-bind:dietData="getState.dietData"
+        v-bind:barDate="getState.barDate"
         v-bind:getActiveForm="getState.activeForm"
         v-bind:getDishType="getState.dishType"
       />

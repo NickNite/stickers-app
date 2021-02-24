@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const Record = new Schema({
+const SnackBarData = new Schema({
     date: String,
-    dish: String,
     description: String,
     contains: String,
     allergens: String,
-    dietsTitle: Array,
+    dietsTitle: String,
     eat: Array,
 });
-module.exports = mongoose.model('Record', Record);
+module.exports = mongoose.model('SnackBarData', SnackBarData);

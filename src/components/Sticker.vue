@@ -36,8 +36,6 @@
         </h3>
         <h6 v-if="getDishType!=='Snack Bar'"><b>Posiłek:&#8195;</b>{{ dish ? dish + "/5" : "-/5" }}</h6>
          </div>
-         <div><img src="@/assets/slim1.png" /></div>
-   
        </div>
         <div v-if="!redactMode">
           <p v-if="description">
@@ -155,25 +153,26 @@ export default {
     description: "",
     contains: "",
     allergens: "",
+    eat: [],
   }),
-  props: ["dishData", "getActiveForm","getDishType"],
+  props: ["dietData","barDate", "getActiveForm","getDishType"],
   created() {
-    for (let date in this.dishData) {
+    for (let date in this.dietData) {
       this.dateLength.push(date);
     }
   },
   beforeUpdate() {
     //Отображаем количество блюд по определнной дате
-    if (this.dishData[this.selectedDate] && this.dishData[this.selectedDate].length != this.dishLength.length) {
+    if (this.dietData[this.selectedDate] && this.dietData[this.selectedDate].length != this.dishLength.length) {
       this.dishLength = [];
-      for (let i = 1; i < this.dishData[this.selectedDate].length; i++) {
-        if (this.dishData[this.selectedDate][i] != null) {
+      for (let i = 1; i < this.dietData[this.selectedDate].length; i++) {
+        if (this.dietData[this.selectedDate][i] != null) {
           this.dishLength.push(i);
         }
       }
-    } else if(this.dishData[this.selectedDate]) {
-      for (let i = 1; i < this.dishData[this.selectedDate].length; i++) {
-        if (this.dishData[this.selectedDate][i] != null) {
+    } else if(this.dietData[this.selectedDate]) {
+      for (let i = 1; i < this.dietData[this.selectedDate].length; i++) {
+        if (this.dietData[this.selectedDate][i] != null) {
           this.dishLength.push(i);
         }
       }
@@ -218,16 +217,16 @@ export default {
       let descr= '';
       let cont = '';
       let allerg='';
-      if (!this.redactMode && this.dishData[this.selectedDate] && this.dishData[this.selectedDate][this.dish] && this.dishData[this.selectedDate][this.dish][
+      if (!this.redactMode && this.dietData[this.selectedDate] && this.dietData[this.selectedDate][this.dish] && this.dietData[this.selectedDate][this.dish][
         this.form
       ]) {
-      descr = this.dishData[this.selectedDate][this.dish][
+      descr = this.dietData[this.selectedDate][this.dish][
         this.form
       ].description;
-      cont = this.dishData[this.selectedDate][this.dish][
+      cont = this.dietData[this.selectedDate][this.dish][
         this.form
       ].contains;
-      allerg = this.dishData[this.selectedDate][this.dish][
+      allerg = this.dietData[this.selectedDate][this.dish][
         this.form
       ].allergens;
     }if(this.redactMode){
@@ -267,13 +266,12 @@ return newForm.join(' ');
       this.redactMode = false;
     },
     printout() {
-      let img = document.querySelector('.headSticker img');
       var newWindow = window.open();
-      let stylesMain = ".print{width:200px; height:200px; font-family:	Arial; margin-top:20px}";
+      let stylesMain = ".print{width:200px; height:200px; font-family:	Arial; margin-top:10px;}";
       let stylesIdSpan = " #span{display:flex; flex-direction: column;}";
-      let styleh3 = "h3{font-weight: 400; margin:30px 0px 2px 10px; font-size:15px}";
+      let styleh3 = "h3{font-weight: 400; margin:30px 0px 2px 10px; font-size:15px; max-width: 220px;}";
       let styleh6 = "h6{margin: 5px 20px; font-size:9px;}";
-      let styleP = "p{font-size:10px; margin:10px; }";
+      let styleP = "p{font-size:10px; margin:10px; word-wrap: break-word; }";
       let styleColdHeat =".coldHeat{font-size:7px; margin:0px 2px 5px 10px}"
       let styleSpan = "span{font-size:7px; margin:0px 2px 5px 10px}";
       let styleFooterInfo =
@@ -294,7 +292,6 @@ return newForm.join(' ');
       newWindow.document.write(document.getElementById("sticker").innerHTML);
       newWindow.document.write("</div>");
       newWindow.print();
-      img.src='https://i.ibb.co/dJQLytg/slim2.png';
       newWindow.close();
     },
   },
@@ -328,27 +325,36 @@ body {
   background: white;
   text-align: center;
 }
+#sticker{
+  margin-top: 20px;
+}
 .sticker {
-  width: 300px;
-  min-height: 300px;
+  width: 350px;
+  min-height: 350px;
   border: 1px solid rgb(0, 129, 28);
   border-radius: 10px;
-  margin: 50px auto;
+  margin: 40px auto;
   display: flex;
   flex-direction: column;
   text-align: left;
-z-index: 100;
+justify-content: space-between;
+background-image: url('../assets/slim1.png');
+background-repeat: no-repeat;
+background-size: 120px 120px;
+background-position: right top;
   h3 {
     margin: 10px 30px;
     font-size: 20px;
+    word-wrap: break-word;
+    max-width: 220px;
   }
   h6 {
-    margin: 10px 20px;
+    margin: 10px 50px;
     font-size: 12px;
   }
   p {
     font-size: 14px;
-    margin: 10px 20px;
+    margin: 5px 20px;
     word-wrap: break-word;
     width:180px;
   }
@@ -359,13 +365,9 @@ z-index: 100;
     font-size: 14px;
   }
   .headSticker{
-    margin-bottom: -20px;
+    margin-bottom: 0px;
     display: flex;
     justify-content: space-between;
-      img{
-      width: 100px;
-      height: 100px;
-  }
   }
 }
 
@@ -393,7 +395,7 @@ textarea {
 }
 .buttForm {
   position: absolute;
-  margin-top: 100px;
+  margin-top: 150px;
   .buttPos {
     margin: 10px;
   }
@@ -413,7 +415,7 @@ textarea {
 .footerSticker{
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
 }
 .footerRed{

@@ -21,7 +21,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 
 //Подключаем Rest API 
-app.use('/addInfo', require('./routes/records'));
+app.use('/api/diet', require('./routes/diet'));
+app.use('/api/snackbar', require('./routes/snackBar'));
+app.use('/api/dietdata', require('./routes/dietData'));
+app.use('/api/snackbardata', require('./routes/snackBarData'));
+
+
+
 //Обозначаем статическую папку для  запуска приложения
 app.use('/', express.static(path.join(__dirname, '../dist')));
 

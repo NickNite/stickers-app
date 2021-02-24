@@ -1,5 +1,23 @@
 <template>
   <div class="newInfo">
+      <b-form-group
+    class="radio"
+      v-slot="{ ariaDescribedby }"
+      
+    >
+      <b-form-radio-group
+        id="btn-radios-2"
+        v-model="dishType"
+        :options="dishList"
+        :aria-describedby="ariaDescribedby"
+        button-variant="outline-primary"
+        size="lg"
+        name="radio-btn-outline"
+        
+        buttons
+      ></b-form-radio-group>
+    </b-form-group>
+    
     <form @submit.prevent="addDiets">
       <header>
         <div class="date">
@@ -12,9 +30,10 @@
             v-model="$v.newDiets.date.$model"
           />
         </div>
+         <h4>{{dishType}}</h4>
         <div>
           <label for="dish"><b>Danie:</b></label>
-          <select id="dish" v-model="$v.newDiets.dish.$model">
+          <select id="dish" v-model="$v.newDiets.dish.$model" :disabled="this.dishType =='Snack Bar'">
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -59,141 +78,41 @@
         </div>
       </body>
       <div class="eat">
-        <b-form-checkbox id="hot" value="ciepło" v-model="newDiets.eat"
-          >Ciepło</b-form-checkbox
+       <b-form-group>
+      <template #label>
+        <b>Wybierz sposób użycia:</b><br>
+        <b-form-checkbox
+          v-model="allSelected"
+          aria-describedby="howToUse"
+          aria-controls="howToUse"
+          @change="toggleAll"
         >
-        <b-form-checkbox id="cold" value="zimno" v-model="newDiets.eat"
-          >Zimno</b-form-checkbox
-        >
+          {{ allSelected ?   'Wybranę wszystkie' : 'Odznaczyć wszystkie:' }}
+        </b-form-checkbox>
+      </template>
+
+      <template v-slot="{ ariaDescribedby }">
+        <b-form-checkbox-group
+          id="howToUse"
+          v-model="newDiets.eat"
+          :options="howToUse"
+          :aria-describedby="ariaDescribedby"
+          name="howToUse"
+          class="ml-2"
+          aria-label="howToUse"
+          inline
+        ></b-form-checkbox-group>
+        </template>
+      </b-form-group>
       </div>
       <footer>
           <b-form-checkbox
            v-for="(diet,i) in getDietForm" :key="{ diet } + i"
             :id="diet"
             :value="diet"
-            v-model="newDiets.dietsTitle"
+            v-model="$v.newDiets.dietsTitle.$model"
             >{{diet}}</b-form-checkbox
           >
-        <!-- <div class="slim">
-          <b-form-checkbox
-            id="slim"
-            value="Slim"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Slim</b-form-checkbox
-          >
-        </div>
-        <div class="sport">
-          <b-form-checkbox
-            id="sport"
-            value="Sport"
-            v-model="newDiets.dietsTitle"
-            >Sport</b-form-checkbox
-          >
-        </div>
-        <div class="vege">
-          <b-form-checkbox
-            id="wege"
-            value="Wege"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Wege</b-form-checkbox
-          >
-        </div>
-        <div class="vege_fish">
-          <b-form-checkbox
-            id="wege+fish"
-            value="Wege+fish"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Wege+Fish</b-form-checkbox
-          >
-        </div>
-        <div class="gain">
-          <b-form-checkbox
-            id="gain"
-            value="Gain"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Gain</b-form-checkbox
-          >
-        </div>
-        <div class="office">
-          <b-form-checkbox
-            id="office"
-            value="Office"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Office</b-form-checkbox
-          >
-        </div>
-        <div class="office-wege">
-          <b-form-checkbox
-            id="office-wege"
-            value="Office-Wege"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Office-Wege</b-form-checkbox
-          >
-        </div>
-        <div class="slimBezLaktozy">
-          <b-form-checkbox
-            id="slimBezLaktozy"
-            value="Slim-Bez laktozy"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Bez laktozy</b-form-checkbox
-          >
-        </div>
-        <div class="slimBezGlutenu">
-          <b-form-checkbox
-            id="slimBezGlutenu"
-            value="Slim-Bez glutenu"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Bez glutenu</b-form-checkbox
-          >
-        </div>
-        <div class="slimBezLaktozyiGlutenu">
-          <b-form-checkbox
-            id="slimBezLaktozyiGlutenu"
-            value="Slim-Bez laktozy i glutenu"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Bez lakt i glut</b-form-checkbox
-          >
-        </div>
-        <div class="keto">
-          <b-form-checkbox
-            id="keto"
-            value="Keto"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Keto</b-form-checkbox
-          >
-        </div>
-        <div class="ketoWegeFish">
-          <b-form-checkbox
-            id="ketoWegeFish"
-            value="Keto-Wege+Fish"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Keto-Wege+Fish</b-form-checkbox
-          >
-        </div>
-        <div class="ketoLowCarbh">
-          <b-form-checkbox
-            id="ketoLowCarbh"
-            value="Keto-Low Carb"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Keto-Low Carb</b-form-checkbox
-          >
-        </div>
-        <div class="zdrowyObiadek">
-          <b-form-checkbox
-            id="zdrowyObiadek"
-            value="Zdrowy Obiadek"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Zdrowy Obiadek</b-form-checkbox
-          >
-        </div>
-        <div class="zdrowyObiadekWege">
-          <b-form-checkbox
-            id="zdrowyObiadekWege"
-            value="Zdrowy Obiadek-Wege"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >Zdrowy Obiadek-Wege</b-form-checkbox
-          >
-        </div> -->
       </footer>
       <b-button
         class="buttonSend"
@@ -235,8 +154,12 @@ import { mapActions } from "vuex";
 import { required } from "vuelidate/lib/validators";
 export default {
   name: "AddNewInfo",
-  props: ["allDiets"],
+  props: ["allDiets","snackBar"],
   data: () => ({
+    dishType:"Diety",
+    dishList:['Diety', 'Snack Bar'],
+    allSelected:false,
+    howToUse:['ciepło','zimno'],
     submitStatus: "ERROR",
     variant: null,
     title: null,
@@ -305,16 +228,36 @@ export default {
     },
     getDietForm(){
       let forms =[];
+      if(this.dishType =='Diety')
       for(let key in this.allDiets){
         forms.push(key);
+      }
+      if(this.dishType =='Snack Bar'){
+        for(let key in this.snackBar){
+          forms.push(key)
+        }
       }
 return forms;
     },
   },
+  watch: {
+      selected(newValue) {
+        // Handle changes in individual flavour checkboxes
+        if (newValue.length === 0) {
+          this.allSelected = false
+        } else if (newValue.length === this.flavours.length) {
+          this.allSelected = true
+        } else {
+          this.allSelected = false
+        }
+      }
+    },
   methods: {
     ...mapActions(["addNewDiets", "getDishDate"]),
     addDiets() {
-      let diet = {
+      let diet ={};
+      if(this.dishType =='Diety'){
+        diet = {
         date: this.newDiets.date,
         dish: this.newDiets.dish,
         description: this.newDiets.description,
@@ -322,7 +265,21 @@ return forms;
         allergens: this.newDiets.allergens,
         dietsTitle: this.newDiets.dietsTitle,
         eat: this.newDiets.eat,
+      }
+      }
+      if(this.dishType == 'Snack Bar'){
+        this.newDiets.dish = '1';
+         diet = {
+        date: this.newDiets.date,
+        dish: this.dishType,
+        description: this.newDiets.description,
+        contains: this.newDiets.contains,
+        allergens: this.newDiets.allergens,
+        dietsTitle: this.newDiets.dietsTitle,
+        eat: this.newDiets.eat,
+      }
       };
+       
       this.$v.$touch();
       if (this.$v.newDiets.$invalid) {
         this.submitStatus = "ERROR";
@@ -336,9 +293,14 @@ return forms;
         this.newDiets.allergens = "";
         this.newDiets.dietsTitle = [];
         this.newDiets.eat = [];
+        this.allSelected=false;
       }
     },
+     toggleAll(checked) {
+        this.newDiets.eat = checked ? this.howToUse.slice() : []
+      },
   },
+  
 };
 </script>
 
@@ -347,32 +309,49 @@ return forms;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+.radio{
+  margin-top: 30px;
 }
 header {
+  min-width: 650px;
   display: flex;
-  justify-content: space-between;
-  width: 500px;
+  justify-content: space-evenly;
   margin-top: 50px;
+  margin-left: -50px;
   label {
     margin-right: 10px;
+  }
+  h4{
+    width: 150px;
+    padding: 7px 20px 10px 20px;
+    background: rgb(3, 129, 30);
+    border-radius: 5px;
+    color: #d9f2fc;
   }
 }
 footer {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 50px;
+  border-top: 1px solid rgb(202, 202, 202);
+  border-bottom: 1px solid rgb(202, 202, 202);
+  padding: 20px 0px;
+  margin-top: 20px;
   div {
     margin: 5px;
   }
 }
 .buttonSend {
-  margin: 60px auto 10px auto;
+  margin: 20px auto 0px auto;
   width: 250px;
 }
 body {
+  min-width: 650px;
   text-align: left;
   background: white;
+  margin: 0px 100px;
   textarea {
     resize: none;
   }
@@ -387,11 +366,16 @@ body {
   margin: 20px;
 }
 .myToast {
-  position: absolute;
+  position: fixed;
   top: 50px;
   right: 50px;
 }
 .error {
   border: 1px solid #fc5c65;
 }
+#howToUse{
+  display: flex;
+  justify-content: center;
+}
+
 </style>
