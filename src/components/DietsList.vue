@@ -57,7 +57,7 @@ export default {
         }
       }
       if (this.dishType === "Bar") {
-        this.setDishType(this.dishType);
+        // this.setDishType(this.dishType);
         for (let bar of this.snackBar) {
           for (let calories of bar.dietColories) {
             dietsList.push(bar.dietTitle + " " + calories);

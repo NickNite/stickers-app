@@ -158,6 +158,7 @@ export default {
         fats: this.fats,
         carbohydrates: this.carbohydrates,
         protein: this.protein,
+        error: "SUCCESS",
       };
       if (this.$v.$invalid) {
         this.onChangeInfo({ error: "ERROR" });

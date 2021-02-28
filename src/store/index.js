@@ -11,21 +11,21 @@ export default new Vuex.Store({
     redactMode: false,
     loading: false,
     activeForm: '',
-    dishType:'Diet',
-    submitStatus: "ERROR",
+    dishType: 'Diet',
+    submitStatus: ''
   },
   mutations: {
     //тут прописываем логику
-    changeDishType(state, typed){
+    changeDishType(state, typed) {
       state.dishType = typed;
     },
     newActiveForm(state, form) {
       state.activeForm = form;
     },
-    changeRedactMode(state,payload){
+    changeRedactMode(state, payload) {
       state.redactMode = payload;
     },
-    changeSubmitStatus(state,payload){
+    changeSubmitStatus(state, payload) {
       state.submitStatus = payload
     },
   },
@@ -33,13 +33,13 @@ export default new Vuex.Store({
     setActiveForm({ commit }, form) {
       commit('newActiveForm', form)
     },
-    setDishType({commit}, typed){
+    setDishType({ commit }, typed) {
       commit('changeDishType', typed)
     },
-    setRedactMode({commit}, payload){
+    setRedactMode({ commit }, payload) {
       commit('changeRedactMode', payload)
     },
-    setSubmitStatus({commit}, payload){
+    setSubmitStatus({ commit }, payload) {
       commit('changeSubmitStatus', payload)
     }
   },

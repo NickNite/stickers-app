@@ -120,6 +120,7 @@ export default {
         contains: this.contains,
         allergens: this.allergens,
         eat: this.eat,
+        error: "SUCCESS",
       };
       if (this.$v.$invalid) {
         this.onChangeInfo({ error: "ERROR" });

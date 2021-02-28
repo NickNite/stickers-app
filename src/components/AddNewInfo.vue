@@ -66,7 +66,7 @@
         type="submit"
         pill
         block
-        @click="$bvToast.show('toast')"
+        @click="makeToast()"
         title="Dodajesz nowe danie"
         variant="info"
         >Dodaj</b-button
@@ -74,7 +74,7 @@
     </form>
 
     <!-- ПЕРЕДЕЛАТЬ ТОСТЫ!!! ПРИ РЕЗКОМ ИЗМЕНЕНИИ СТАТУСА МЕНЯЕТСЯ И ТОСТ! -->
-    <b-toast
+    <!-- <b-toast
       v-if="submitStatus == 'ERROR'"
       id="toast"
       class="myToast"
@@ -93,7 +93,7 @@
       static
       append-toast
       >Nowa dieta była dodana!!!
-    </b-toast>
+    </b-toast> -->
     <!-- ПЕРЕДЕЛАТЬ ТОСТЫ!!! ПРИ РЕЗКОМ ИЗМЕНЕНИИ СТАТУСА МЕНЯЕТСЯ И ТОСТ! -->
   </div>
 </template>
@@ -186,6 +186,24 @@ export default {
   },
   methods: {
     ...mapActions(["addNewDiets", "addNewSnackBar", "setSubmitStatus"]),
+    makeToast(append = false) {
+      if (this.newInfo.error == "ERROR") {
+        this.$bvToast.toast(`Coś poszło nie tak, sprobój jeszcze raz!!!`, {
+          title: "Wystąpil bląd!!!",
+          autoHideDelay: 5000,
+          appendToast: append,
+          variant: "danger",
+        });
+      }
+      if (this.newInfo.error == "SUCCESS") {
+        this.$bvToast.toast(`Nowa dieta była dodana!!!`, {
+          title: "Udało się!",
+          autoHideDelay: 5000,
+          appendToast: append,
+          variant: "success",
+        });
+      }
+    },
     onChangeInfo(data) {
       if (data.error && data.error == "ERROR") {
         this.newInfo = data;

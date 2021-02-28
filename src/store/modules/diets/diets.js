@@ -37,10 +37,10 @@ export default {
     changeDiet(state, payload) {
       state.dietList = payload;
     },
-    changeDietData(state, payload, rootState) {
+    changeDietData(state, payload) {
       state.dietData.push(payload);
       console.log(payload);
-      rootState.loading = false;
+      // rootState.loading = false;
     }
   },
   actions: {
@@ -58,7 +58,8 @@ export default {
     // setDishInfo({ commit }, payload) {
     //   return axios.put(`${hostName}/api/dietdata`, payload)
     // },
-    addNewDiets(payload) {
+    addNewDiets({ commit }, payload) {
+      commit('changeDietData', payload)
       // return axios.post(`${hostName}/api/dietdata`, payload);
       console.log(payload);
     }
