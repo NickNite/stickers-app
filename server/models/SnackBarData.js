@@ -1,12 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const SnackBarData = new Schema({
-    date: String,
-    description: String,
-    contains: String,
-    allergens: String,
-    dietsTitle: String,
-    eat: Array,
+  date: String,
+  description: String,
+  contains: String,
+  composition: String,
+  dietsTitle: String,
+  nutValue: Number,
+  energyValue: Number,
+  carbohydrates: Number,
+  protein: Number,
+  fats: Number
 });
-module.exports = mongoose.model('SnackBarData', SnackBarData);
+module.exports = mongoose.model("SnackBarData", SnackBarData);

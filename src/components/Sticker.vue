@@ -1,9 +1,14 @@
 <template>
   <div class="mainSticker">
-    <header>
+    <header class="headerSticker">
       <div class="date">
         <label for="date"><b>Data:</b></label>
-        <b-form-select id="date" v-model="selectedDate" :options="dateLength" :disabled="redactMode">
+        <b-form-select
+          id="date"
+          v-model="selectedDate"
+          :options="dateLength"
+          :disabled="redactMode"
+        >
           >
           <template #first>
             <b-form-select-option :value="null" disabled
@@ -14,7 +19,12 @@
       </div>
       <div class="dish">
         <label for="dish"><b>Danie:</b></label>
-        <b-form-select id="dish" v-model="dish" :options="dishLength" :disabled="getDishType=='Snack Bar' || redactMode">
+        <b-form-select
+          id="dish"
+          v-model="dish"
+          :options="dishLength"
+          :disabled="getDishType == 'Bar' || redactMode"
+        >
           <template #first>
             <b-form-select-option :value="null" disabled
               >--Danie--</b-form-select-option
@@ -23,92 +33,60 @@
         </b-form-select>
       </div>
     </header>
-    <body>
-      
+    <body class="bodySticker">
       <div class="sticker">
-        <div  id="sticker">
-       <div class="headSticker"> 
-         <div>
-         <h3>
-          {{
-            getActiveForm ? getActiveForm.toUpperCase() : "Wybierz rodzaj diety"
-          }}
-        </h3>
-        <h6 v-if="getDishType!=='Snack Bar'"><b>Posiłek:&#8195;</b>{{ dish ? dish + "/5" : "-/5" }}</h6>
-         </div>
-       </div>
-        <div v-if="!redactMode">
-          <p v-if="description">
-            {{ description }}
-          </p>
-          <p v-else>Wybierz danie i datę</p>
-          <!-- Доделать изменения из базы данных -->
-<div class="coldHeat"> 
-  Spożywać na cieplo/zimno
-</div>
-<!-- Доделать изменения из базы данных -->
-          <div class="contains" id="span">
-            <span><b>Zawiera:</b>&#8195;{{ contains || "----" }}</span>
-            <span><b>Alergeny:</b>&#8195;{{ allergens || "----" }}</span>
+        <div id="sticker">
+          <div class="headSticker">
+            <div>
+              <h3 v-if="getDishType == 'Diet'">
+                {{
+                  getActiveForm
+                    ? getActiveForm.toUpperCase()
+                    : "Wybierz rodzaj diety"
+                }}
+              </h3>
+              <h3 v-else>SNACK BAR</h3>
+              <h6 v-if="getDishType == 'Diet'">
+                <b>Posiłek:&#8195;</b>{{ dish ? dish + "/5" : "-/5" }}
+              </h6>
+              <h6 v-else>
+                {{ getActiveForm ? getActiveForm : "Wybierz rodzaj baru" }}
+              </h6>
+            </div>
+          </div>
+          <!-- Проверяем на тип наклейки(бар или диета) -->
+          <div>
+            <DietSticker
+              v-if="getDishType == 'Diet'"
+              v-bind:dietData="dietData"
+              v-bind:redactMode="redactMode"
+              v-bind:selectedDate="selectedDate"
+              v-bind:dish="dish"
+              v-bind:form="form"
+            />
+            <BarSticker
+              v-else-if="getDishType == 'Bar'"
+              v-bind:redactMode="redactMode"
+              v-bind:barData="barData"
+              v-bind:selectedDate="selectedDate"
+              v-bind:form="form"
+            />
+          </div>
+          <div class="footerInfo">
+            <span>
+              Należy spożyć do:
+              {{ selectedDate ? setShelfLifeDate : "----" }}
+            </span>
+            <span>Przechowywać w temperaturze:&nbsp;4-6&#176;C</span>
           </div>
         </div>
-        <div v-else>
-          <form @submit.prevent="redactData" class="form">
-            <div>
-              <label for="description">Opis:</label>
-              <b-col sm="10">
-                <b-form-textarea
-                  id="description"
-                  size="sm"
-                  v-model="description"
-                ></b-form-textarea>
-              </b-col>
-            </div>
-            <div>
-              <label for="contains">Zawiera:</label>
-              <b-form-input
-                v-model="contains"
-                id="contains"
-                size="sm"
-              ></b-form-input>
-            </div>
-            <div>
-              <label for="allergens">Alergeny:</label>
-              <b-form-input
-                v-model="allergens"
-                id="allergens"
-                size="sm"
-              ></b-form-input>
-            </div>
-            <div class="buttForm">
-              <b-button class="buttPos" type="submit" variant="outline-success">
-                <b-icon icon="check-circle" aria-hidden="true"></b-icon>
-                &#8195;Zatwierdzić</b-button
-              >
-              <b-button
-                class="buttPos"
-                @click="redactModeOff"
-                variant="outline-danger"
-              >
-                <b-icon icon="x-circle-fill" aria-hidden="true"></b-icon>
-                &#8195;Anulować</b-button
-              >
-            </div>
-          </form>
+        <div class="footerSticker">
+          <span class="footerRed">www.dietyodbrokula.pl</span>
+          <span class="footerGreen"
+            >kontakt@dietyodbrokula.pl, tel.58 727 22 22</span
+          >
+          <span class="footerGreen">Zakopiańska 1, 84-230 Rumia</span>
         </div>
-        <div class="footerInfo">
-         <span >
-          Należy spożyć do:
-          {{ selectedDate ? setShelfLifeDate : "----" }}
-        </span>
-        <span>Przechowywać w temperaturze:&nbsp;4-6&#176;C</span>
-        </div>
-      </div>
-      <div class="footerSticker">
-        <span class="footerRed">www.dietyodbrokula.pl</span>
-        <span class="footerGreen">kontakt@dietyodbrokula.pl, tel.58 727 22 22</span>
-        <span class="footerGreen">Zakopiańska 1, 84-230 Rumia</span>
-      </div>
       </div>
       <div class="changeInfo">
         <b-button
@@ -117,7 +95,7 @@
           size="sm"
           title="Edytuj danę na naklejcę"
           class="mb-2"
-          :disabled="!description"
+          :disabled="!form"
         >
           <b-icon icon="pencil-square" aria-hidden="true"></b-icon>
           Edytować
@@ -140,22 +118,24 @@
 <script>
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import DietSticker from "./DietSticker";
+import BarSticker from "./BarSticker";
 import { mapActions } from "vuex";
+
 export default {
   name: "Sticker",
+  components: {
+    DietSticker,
+    BarSticker,
+  },
   data: () => ({
-    redactMode: false,
     selectedDate: null,
     dateLength: [],
     dishLength: [],
     dish: null,
     form: "",
-    description: "",
-    contains: "",
-    allergens: "",
-    eat: [],
   }),
-  props: ["dietData","barDate", "getActiveForm","getDishType"],
+  props: ["dietData", "barData", "getActiveForm", "getDishType", "redactMode"],
   created() {
     for (let date in this.dietData) {
       this.dateLength.push(date);
@@ -163,26 +143,25 @@ export default {
   },
   beforeUpdate() {
     //Отображаем количество блюд по определнной дате
-    if (this.dietData[this.selectedDate] && this.dietData[this.selectedDate].length != this.dishLength.length) {
+    if (
+      this.dietData[this.selectedDate] &&
+      this.dietData[this.selectedDate].length != this.dishLength.length
+    ) {
       this.dishLength = [];
       for (let i = 1; i < this.dietData[this.selectedDate].length; i++) {
         if (this.dietData[this.selectedDate][i] != null) {
           this.dishLength.push(i);
         }
       }
-    } else if(this.dietData[this.selectedDate]) {
+    } else if (this.dietData[this.selectedDate]) {
       for (let i = 1; i < this.dietData[this.selectedDate].length; i++) {
         if (this.dietData[this.selectedDate][i] != null) {
           this.dishLength.push(i);
         }
       }
-    };
-   
+    }
+
     this.form = this.transformDietForm(this.getActiveForm);
-  
-    this.description = this.setDishDate.descr;
-    this.contains=this.setDishDate.cont;
-    this.allergens=this.setDishDate.allerg;
   },
   computed: {
     //Определяем срок годности товара от выбраной даты
@@ -212,74 +191,35 @@ export default {
       let shelfLife = shelfDay + "-" + shelfMonth + "-" + shelfYear;
       return shelfLife;
     },
-    setDishDate(){
-       //Отображаем данные из БД если нету режима редактирования и проходит проверку на присутствие данных
-      let descr= '';
-      let cont = '';
-      let allerg='';
-      if (!this.redactMode && this.dietData[this.selectedDate] && this.dietData[this.selectedDate][this.dish] && this.dietData[this.selectedDate][this.dish][
-        this.form
-      ]) {
-      descr = this.dietData[this.selectedDate][this.dish][
-        this.form
-      ].description;
-      cont = this.dietData[this.selectedDate][this.dish][
-        this.form
-      ].contains;
-      allerg = this.dietData[this.selectedDate][this.dish][
-        this.form
-      ].allergens;
-    }if(this.redactMode){
-      descr=this.description;
-      cont = this.contains;
-      allerg = this.allergens;
-    }
-    
-    return {descr, cont, allerg};
-    }
   },
   methods: {
-    ...mapActions(["setDishInfo"]),
-    transformDietForm(oldForm){
-      //Делаем из названия диеты, форму диеты для обработки запросов
-let newForm = oldForm.split(' ').slice(0,-1);
-return newForm.join(' ');
-    },
+    ...mapActions(["setRedactMode"]),
     redactModeOn() {
-      this.redactMode = true;
+      this.setRedactMode(true);
     },
-    redactModeOff() {
-      this.redactMode = false;
-    },
-    redactData() {
-      let dishInfo = {
-        date: this.selectedDate,
-        dish: this.dish,
-        form: this.form,
-      };
-      let data = {
-        description: this.description,
-        contains: this.contains,
-        allergens: this.allergens,
-      };
-      this.setDishInfo({ dishInfo, data });
-      this.redactMode = false;
+
+    transformDietForm(oldForm) {
+      //Делаем из названия диеты, форму диеты для обработки запросов
+      let newForm = oldForm.split(" ").slice(0, -1);
+      return newForm.join(" ");
     },
     printout() {
       var newWindow = window.open();
-      let stylesMain = ".print{width:200px; height:200px; font-family:	Arial; margin-top:10px;}";
+      let stylesMain =
+        ".print{width:200px; height:200px; font-family:	Arial; margin-top:10px;}";
       let stylesIdSpan = " #span{display:flex; flex-direction: column;}";
-      let styleh3 = "h3{font-weight: 400; margin:30px 0px 2px 10px; font-size:15px; max-width: 220px;}";
+      let styleh3 =
+        "h3{font-weight: 400; margin:30px 0px 2px 10px; font-size:15px; max-width: 220px;}";
       let styleh6 = "h6{margin: 5px 20px; font-size:9px;}";
       let styleP = "p{font-size:10px; margin:10px; word-wrap: break-word; }";
-      let styleColdHeat =".coldHeat{font-size:7px; margin:0px 2px 5px 10px}"
+      let styleColdHeat = ".coldHeat{font-size:7px; margin:0px 2px 5px 10px}";
       let styleSpan = "span{font-size:7px; margin:0px 2px 5px 10px}";
       let styleFooterInfo =
         ".footerInfo{font-size:7px; position:relative; top:10px; left:50px; display:flex; flex-direction:column}";
       newWindow.document.write(
         `<style>${
           stylesMain +
-          styleColdHeat+
+          styleColdHeat +
           stylesIdSpan +
           styleh3 +
           styleh6 +
@@ -298,9 +238,8 @@ return newForm.join(' ');
 };
 </script>
 
-<style scoped lang="scss">
-
-header {
+<style  lang="scss">
+.headerSticker {
   display: flex;
   margin: 40px 0px;
   div {
@@ -321,11 +260,11 @@ header {
   display: flex;
   align-items: center;
 }
-body {
+.bodySticker {
   background: white;
   text-align: center;
 }
-#sticker{
+#sticker {
   margin-top: 20px;
 }
 .sticker {
@@ -337,11 +276,11 @@ body {
   display: flex;
   flex-direction: column;
   text-align: left;
-justify-content: space-between;
-background-image: url('../assets/slim1.png');
-background-repeat: no-repeat;
-background-size: 120px 120px;
-background-position: right top;
+  justify-content: space-between;
+  background-image: url("../assets/slim1.png");
+  background-repeat: no-repeat;
+  background-size: 120px 120px;
+  background-position: right top;
   h3 {
     margin: 10px 30px;
     font-size: 20px;
@@ -356,7 +295,7 @@ background-position: right top;
     font-size: 14px;
     margin: 5px 20px;
     word-wrap: break-word;
-    width:180px;
+    width: 180px;
   }
   .contains {
     display: flex;
@@ -364,7 +303,7 @@ background-position: right top;
     margin: 10px 20px;
     font-size: 14px;
   }
-  .headSticker{
+  .headSticker {
     margin-bottom: 0px;
     display: flex;
     justify-content: space-between;
@@ -379,7 +318,7 @@ background-position: right top;
   cursor: pointer;
 }
 h2,
-h6 {
+.mainSticker h6 {
   padding: 0;
   margin: 0;
 }
@@ -400,36 +339,35 @@ textarea {
     margin: 10px;
   }
 }
-.footerInfo{
-  margin:20px;
+.footerInfo {
+  margin: 20px;
   font-size: 10px;
-     display: flex;
-     flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
-.coldHeat{
+.coldHeat {
   font-size: 10px;
   margin-left: 20px;
 }
-.footerSticker{
+.footerSticker {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
 }
-.footerRed{
-  color:red;
+.footerRed {
+  color: red;
   font-size: 14px;
   font-weight: bold;
   margin: 0px;
-  padding:0px;
-  
+  padding: 0px;
 }
-.footerGreen{
-  color:green;
+.footerGreen {
+  color: green;
   font-size: 12px;
-  margin:-3px 0 3px 0;
-  padding:0px;
+  margin: -3px 0 3px 0;
+  padding: 0px;
 }
 </style>

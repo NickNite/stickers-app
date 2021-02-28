@@ -1,10 +1,6 @@
 <template>
   <div class="dietsList">
-         <b-form-group
-    class="radio"
-      v-slot="{ ariaDescribedby }"
-      
-    >
+    <b-form-group class="radio" v-slot="{ ariaDescribedby }">
       <b-form-radio-group
         id="btn-radios-2"
         v-model="dishType"
@@ -13,11 +9,10 @@
         button-variant="outline-primary"
         size="lg"
         name="radio-btn-outline"
-        
         buttons
       ></b-form-radio-group>
     </b-form-group>
-     <h4>{{dishType}}</h4>
+    <h4>{{ dishType }}</h4>
     <b-list-group>
       <b-list-group-item
         class="diet"
@@ -36,40 +31,40 @@
 import { mapActions } from "vuex";
 export default {
   name: "DietsList",
-  props: ["allDiets","snackBar"],
+  props: ["allDiets", "snackBar"],
   data: () => ({
     dietsList: [],
     active: "",
-    dishType:"Diety",
-    dishList:['Diety', 'Snack Bar']
+    dishType: "Diet",
+    dishList: ["Diet", "Bar"],
   }),
-  mounted() {
+  created() {
     this.dietsList = this.setDiets;
   },
-updated(){
-  //Меняем тип продукта(диеты или снек бар)
-this.dietsList = this.setDiets;
-this.changeDishType(this.dishType)
-},
+  updated() {
+    //Меняем тип продукта(диеты или снек бар)
+    this.dietsList = this.setDiets;
+    this.changeDishType(this.dishType);
+  },
   computed: {
     setDiets() {
       let dietsList = [];
-      if(this.dishType ==="Diety"){
-        for (let diet in this.allDiets) {
-        for (let calories of this.allDiets[diet]) {
-          dietsList.push(diet + " " + calories);
+      if (this.dishType === "Diet") {
+        for (let diet of this.allDiets) {
+          for (let calories of diet.dietColories) {
+            dietsList.push(diet.dietTitle + " " + calories);
+          }
         }
       }
-      }
-      if(this.dishType==="Snack Bar"){
-        this.setDishType(this.dishType)
- for (let diet in this.snackBar) {
-        for (let calories of this.snackBar[diet]) {
-          dietsList.push(diet + " " + calories);
+      if (this.dishType === "Bar") {
+        this.setDishType(this.dishType);
+        for (let bar of this.snackBar) {
+          for (let calories of bar.dietColories) {
+            dietsList.push(bar.dietTitle + " " + calories);
+          }
         }
       }
-      }
-     return dietsList;
+      return dietsList;
     },
   },
   methods: {
@@ -79,10 +74,10 @@ this.changeDishType(this.dishType)
       this.active = event.target.innerHTML;
       this.setActiveForm(this.active);
     },
-    changeDishType(){
+    changeDishType() {
       //Изменяем тип продукта(диета,бар)
-      this.setDishType(this.dishType)
-    }
+      this.setDishType(this.dishType);
+    },
   },
 };
 </script>
@@ -111,8 +106,7 @@ span:hover {
 .active {
   background: lightgray;
 }
-.radio{
+.radio {
   margin-top: 15px;
 }
-
 </style>

@@ -1,10 +1,6 @@
 <template>
   <div class="newInfo">
-      <b-form-group
-    class="radio"
-      v-slot="{ ariaDescribedby }"
-      
-    >
+    <b-form-group class="radio" v-slot="{ ariaDescribedby }">
       <b-form-radio-group
         id="btn-radios-2"
         v-model="dishType"
@@ -13,13 +9,12 @@
         button-variant="outline-primary"
         size="lg"
         name="radio-btn-outline"
-        
         buttons
       ></b-form-radio-group>
     </b-form-group>
-    
-    <form @submit.prevent="addDiets">
-      <header>
+
+    <form @submit.prevent="addInfo">
+      <header class="headerAddInfo">
         <div class="date">
           <label for="date"><b>Data:</b></label>
           <input
@@ -27,13 +22,17 @@
             :min="maxMinDate[1]"
             :max="maxMinDate[0]"
             id="date"
-            v-model="$v.newDiets.date.$model"
+            v-model="$v.date.$model"
           />
         </div>
-         <h4>{{dishType}}</h4>
+        <h4>{{ dishType }}</h4>
         <div>
           <label for="dish"><b>Danie:</b></label>
-          <select id="dish" v-model="$v.newDiets.dish.$model" :disabled="this.dishType =='Snack Bar'">
+          <select
+            id="dish"
+            v-model="$v.dish.$model"
+            :disabled="this.dishType == 'Bar'"
+          >
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -42,77 +41,25 @@
           </select>
         </div>
       </header>
-      <body class="body">
-        <div class="description">
-          <label for="description"><b>Opis:</b></label>
-          <b-form-textarea
-            :state="$v.newDiets.description.required"
-            id="description"
-            v-model.trim="$v.newDiets.description.$model"
-            placeholder="Wpish opis danią..."
-            rows="4"
-            max-rows="4"
-          ></b-form-textarea>
-        </div>
-        <div class="contains">
-          <label for="contains"><b>Zawiera:</b></label>
-          <b-form-textarea
-            :state="$v.newDiets.contains.required"
-            id="contains"
-            v-model.trim="$v.newDiets.contains.$model"
-            placeholder="Wpish co zawiera danią..."
-            rows="3"
-            max-rows="3"
-          ></b-form-textarea>
-        </div>
-        <div class="allergens">
-          <label for="allergens"><b>Alergeny:</b></label>
-          <b-form-textarea
-            :state="$v.newDiets.allergens.required"
-            id="allergens"
-            v-model.trim="$v.newDiets.allergens.$model"
-            placeholder="Wpish jakie ma alergeny..."
-            rows="3"
-            max-rows="3"
-          ></b-form-textarea>
-        </div>
-      </body>
-      <div class="eat">
-       <b-form-group>
-      <template #label>
-        <b>Wybierz sposób użycia:</b><br>
+      <AddNewDiet
+        v-if="dishType === 'Diet'"
+        v-bind:onChangeInfo="onChangeInfo"
+        v-bind:submitStatus="submitStatus"
+      />
+      <AddNewSnackBar
+        v-if="dishType === 'Bar'"
+        v-bind:onChangeInfo="onChangeInfo"
+        v-bind:submitStatus="submitStatus"
+      />
+      <footer class="footerAddInfo">
         <b-form-checkbox
-          v-model="allSelected"
-          aria-describedby="howToUse"
-          aria-controls="howToUse"
-          @change="toggleAll"
+          v-for="(diet, i) in getDietForm"
+          :key="{ diet } + i"
+          :id="diet"
+          :value="diet"
+          v-model="$v.dietsTitle.$model"
+          >{{ diet }}</b-form-checkbox
         >
-          {{ allSelected ?   'Wybranę wszystkie' : 'Odznaczyć wszystkie:' }}
-        </b-form-checkbox>
-      </template>
-
-      <template v-slot="{ ariaDescribedby }">
-        <b-form-checkbox-group
-          id="howToUse"
-          v-model="newDiets.eat"
-          :options="howToUse"
-          :aria-describedby="ariaDescribedby"
-          name="howToUse"
-          class="ml-2"
-          aria-label="howToUse"
-          inline
-        ></b-form-checkbox-group>
-        </template>
-      </b-form-group>
-      </div>
-      <footer>
-          <b-form-checkbox
-           v-for="(diet,i) in getDietForm" :key="{ diet } + i"
-            :id="diet"
-            :value="diet"
-            v-model="$v.newDiets.dietsTitle.$model"
-            >{{diet}}</b-form-checkbox
-          >
       </footer>
       <b-button
         class="buttonSend"
@@ -125,6 +72,8 @@
         >Dodaj</b-button
       >
     </form>
+
+    <!-- ПЕРЕДЕЛАТЬ ТОСТЫ!!! ПРИ РЕЗКОМ ИЗМЕНЕНИИ СТАТУСА МЕНЯЕТСЯ И ТОСТ! -->
     <b-toast
       v-if="submitStatus == 'ERROR'"
       id="toast"
@@ -145,47 +94,41 @@
       append-toast
       >Nowa dieta była dodana!!!
     </b-toast>
+    <!-- ПЕРЕДЕЛАТЬ ТОСТЫ!!! ПРИ РЕЗКОМ ИЗМЕНЕНИИ СТАТУСА МЕНЯЕТСЯ И ТОСТ! -->
   </div>
 </template>
 
 <script>
 //Пропал тоаст после обработки валидатором
-import { mapActions } from "vuex";
+import AddNewDiet from "./addNewInfo/AddNewDiet";
+import AddNewSnackBar from "./addNewInfo/AddNewSnackBar";
 import { required } from "vuelidate/lib/validators";
+import { mapActions } from "vuex";
 export default {
   name: "AddNewInfo",
-  props: ["allDiets","snackBar"],
+  components: {
+    AddNewDiet,
+    AddNewSnackBar,
+  },
+  props: ["allDiets", "snackBar", "submitStatus"],
   data: () => ({
-    dishType:"Diety",
-    dishList:['Diety', 'Snack Bar'],
-    allSelected:false,
-    howToUse:['ciepło','zimno'],
-    submitStatus: "ERROR",
-    variant: null,
+    dishType: "Diet",
+    dishList: ["Diet", "Bar"],
     title: null,
     maxMinDate: [],
-    newDiets: {
-      date: null,
-      dish: null,
-      description: "",
-      contains: "",
-      allergens: "",
-      dietsTitle: [],
-      eat: [],
+    date: "",
+    dish: "",
+    dietsTitle: [],
+    newInfo: {
+      error: "ERROR",
     },
   }),
   validations: {
-    newDiets: {
-      date: { required },
-      dish: { required },
-      description: { required },
-      contains: { required },
-      allergens: { required },
-      dietsTitle: { required },
-    },
+    date: { required },
+    dish: { required },
+    dietsTitle: { required },
   },
   created() {
-    this.getDishDate();
     this.maxMinDate = this.limitDate;
   },
   computed: {
@@ -226,95 +169,110 @@ export default {
 
       return [max, min];
     },
-    getDietForm(){
-      let forms =[];
-      if(this.dishType =='Diety')
-      for(let key in this.allDiets){
-        forms.push(key);
-      }
-      if(this.dishType =='Snack Bar'){
-        for(let key in this.snackBar){
-          forms.push(key)
+    getDietForm() {
+      let forms = [];
+      if (this.dishType === "Diet") {
+        for (let diet of this.allDiets) {
+          forms.push(diet.dietTitle);
         }
       }
-return forms;
+      if (this.dishType === "Bar") {
+        for (let bar of this.snackBar) {
+          forms.push(bar.dietTitle);
+        }
+      }
+      return forms;
     },
   },
-  watch: {
-      selected(newValue) {
-        // Handle changes in individual flavour checkboxes
-        if (newValue.length === 0) {
-          this.allSelected = false
-        } else if (newValue.length === this.flavours.length) {
-          this.allSelected = true
-        } else {
-          this.allSelected = false
-        }
-      }
-    },
   methods: {
-    ...mapActions(["addNewDiets", "getDishDate"]),
-    addDiets() {
-      let diet ={};
-      if(this.dishType =='Diety'){
-        diet = {
-        date: this.newDiets.date,
-        dish: this.newDiets.dish,
-        description: this.newDiets.description,
-        contains: this.newDiets.contains,
-        allergens: this.newDiets.allergens,
-        dietsTitle: this.newDiets.dietsTitle,
-        eat: this.newDiets.eat,
-      }
-      }
-      if(this.dishType == 'Snack Bar'){
-        this.newDiets.dish = '1';
-         diet = {
-        date: this.newDiets.date,
-        dish: this.dishType,
-        description: this.newDiets.description,
-        contains: this.newDiets.contains,
-        allergens: this.newDiets.allergens,
-        dietsTitle: this.newDiets.dietsTitle,
-        eat: this.newDiets.eat,
-      }
-      };
-       
-      this.$v.$touch();
-      if (this.$v.newDiets.$invalid) {
-        this.submitStatus = "ERROR";
+    ...mapActions(["addNewDiets", "addNewSnackBar", "setSubmitStatus"]),
+    onChangeInfo(data) {
+      if (data.error && data.error == "ERROR") {
+        this.newInfo = data;
       } else {
-        this.submitStatus = "SUCCESS";
-        this.addNewDiets(diet);
-        this.newDiets.date = "";
-        this.newDiets.dish = "";
-        this.newDiets.description = "";
-        this.newDiets.contains = "";
-        this.newDiets.allergens = "";
-        this.newDiets.dietsTitle = [];
-        this.newDiets.eat = [];
-        this.allSelected=false;
+        this.newInfo = data;
       }
     },
-     toggleAll(checked) {
-        this.newDiets.eat = checked ? this.howToUse.slice() : []
-      },
+    addInfo() {
+      if (this.dishType == "Diet") {
+        let diet = {
+          date: this.date,
+          dish: this.dish,
+          description: this.newInfo.description,
+          contains: this.newInfo.contains,
+          allergens: this.newInfo.allergens,
+          dietsTitle: this.dietsTitle,
+          eat: this.newInfo.eat,
+        };
+        this.$v.$touch();
+        if (
+          this.$v.$invalid ||
+          (!this.$v.$invalid && this.newInfo.error == "ERROR") //Обратока формы, что бы не дать отправить пустую, либо не дополненную
+        ) {
+          this.setSubmitStatus("ERROR");
+        } else {
+          this.setSubmitStatus("SUCCESS");
+          this.addNewDiets(diet);
+          this.date = "";
+          this.dish = "";
+          this.dietsTitle = [];
+        }
+      }
+      if (this.dishType == "Bar") {
+        this.dish = "1";
+        let bar = {
+          date: this.date,
+          description: this.newInfo.description,
+          contains: this.newInfo.contains,
+          composition: this.newInfo.composition,
+          dietsTitle: this.dietsTitle,
+          nutValue: this.newInfo.nutValue,
+          energyValue: this.newInfo.energyValue,
+          fats: this.newInfo.fats,
+          carbohydrates: this.newInfo.carbohydrates,
+          protein: this.newInfo.protein,
+        };
+        this.$v.$touch();
+        if (
+          this.$v.$invalid ||
+          (!this.$v.$invalid && this.newInfo.error == "ERROR") //Обратока формы, что бы не дать отправить пустую, либо не дополненную
+        ) {
+          this.setSubmitStatus("ERROR");
+        } else {
+          this.setSubmitStatus("SUCCESS");
+          this.addNewSnackBar(bar);
+          this.date = "";
+          this.dietsTitle = [];
+        }
+      }
+    },
   },
-  
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+.bodyAdd {
+  min-width: 650px;
+  text-align: left;
+  background: white;
+  margin: 0px 100px;
+  textarea {
+    resize: none;
+  }
+  label {
+    margin-right: 10px;
+  }
+}
 .newInfo {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
-.radio{
+.radio {
   margin-top: 30px;
 }
-header {
+.headerAddInfo {
   min-width: 650px;
   display: flex;
   justify-content: space-evenly;
@@ -323,7 +281,7 @@ header {
   label {
     margin-right: 10px;
   }
-  h4{
+  h4 {
     width: 150px;
     padding: 7px 20px 10px 20px;
     background: rgb(3, 129, 30);
@@ -331,7 +289,7 @@ header {
     color: #d9f2fc;
   }
 }
-footer {
+.footerAddInfo {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -347,20 +305,10 @@ footer {
   margin: 20px auto 0px auto;
   width: 250px;
 }
-body {
-  min-width: 650px;
-  text-align: left;
-  background: white;
-  margin: 0px 100px;
-  textarea {
-    resize: none;
-  }
-  label {
-    margin-right: 10px;
-  }
-}
+
 .description,
 .contains,
+.composition,
 .allergens {
   display: flex;
   margin: 20px;
@@ -373,9 +321,8 @@ body {
 .error {
   border: 1px solid #fc5c65;
 }
-#howToUse{
+#howToUse {
   display: flex;
   justify-content: center;
 }
-
 </style>

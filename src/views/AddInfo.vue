@@ -1,7 +1,11 @@
 <template>
   <div class="main">
     <div>
-      <AddNewInfo  v-bind:allDiets="getState.diets" v-bind:snackBar="getState.snackBar"/>
+      <AddNewInfo
+        v-bind:allDiets="getState.diets.dietsList"
+        v-bind:snackBar="getState.snackBar.barList"
+        v-bind:submitStatus="getState.submitStatus"
+      />
       <div title="Wrocisz do strony drukowania" class="link">
         <router-link to="/">Wroć do glównej</router-link>
       </div>
@@ -10,7 +14,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 import AddNewInfo from "../components/AddNewInfo";
 export default {
   name: "AddInfo",
@@ -18,7 +22,7 @@ export default {
     AddNewInfo,
   },
   computed: {
-    ...mapGetters(["getState"])
+    ...mapGetters(["getState"]),
   },
 };
 </script>

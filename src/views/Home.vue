@@ -9,12 +9,16 @@
       ></b-spinner>
     </div>
     <div v-else class="home">
-      <DietsList v-bind:allDiets="getState.diets" v-bind:snackBar="getState.snackBar" />
+      <DietsList
+        v-bind:allDiets="getState.diets.dietsList"
+        v-bind:snackBar="getState.snackBar.barListr"
+      />
       <Sticker
-        v-bind:dietData="getState.dietData"
-        v-bind:barDate="getState.barDate"
+        v-bind:dietData="getState.diets.dietData"
+        v-bind:barDate="getState.snackBar.barDate"
         v-bind:getActiveForm="getState.activeForm"
         v-bind:getDishType="getState.dishType"
+        v-bind:redactMode="getState.redactMode"
       />
     </div>
     <div class="link"><router-link to="/addInfo">Dodaj nowe</router-link></div>
@@ -33,10 +37,10 @@ export default {
     Sticker,
   },
   created() {
-    this.getDishDate();
+    // this.getDiet();
   },
   methods: {
-    ...mapActions(["getDishDate"]),
+    ...mapActions(["getDiet", "getDietData"]),
   },
   computed: {
     ...mapGetters(["getState"]),

@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const path = require('path');
 
+//!!!!Подключаться к API из приложения !!!!
+
+
+
 
 const app = express();
 
