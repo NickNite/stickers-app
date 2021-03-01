@@ -10,9 +10,9 @@ export default new Vuex.Store({
   state: {
     redactMode: false,
     loading: false,
-    activeForm: '',
-    dishType: 'Diet',
-    submitStatus: ''
+    activeForm: "",
+    dishType: "Diet",
+    submitStatus: ""
   },
   mutations: {
     //тут прописываем логику
@@ -26,21 +26,21 @@ export default new Vuex.Store({
       state.redactMode = payload;
     },
     changeSubmitStatus(state, payload) {
-      state.submitStatus = payload
-    },
+      state.submitStatus = payload;
+    }
   },
   actions: {
     setActiveForm({ commit }, form) {
-      commit('newActiveForm', form)
+      commit("newActiveForm", form);
     },
     setDishType({ commit }, typed) {
-      commit('changeDishType', typed)
+      commit("changeDishType", typed);
     },
     setRedactMode({ commit }, payload) {
-      commit('changeRedactMode', payload)
+      commit("changeRedactMode", payload);
     },
     setSubmitStatus({ commit }, payload) {
-      commit('changeSubmitStatus', payload)
+      commit("changeSubmitStatus", payload);
     }
   },
   modules: {
@@ -50,8 +50,6 @@ export default new Vuex.Store({
   getters: {
     getState(state) {
       return state;
-    },
+    }
   }
-}
-
-);
+});

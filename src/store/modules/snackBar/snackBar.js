@@ -23,7 +23,45 @@ export default {
         dietColories: ["M", "XL"]
       }
     ],
-    barData: []
+    barData: [
+      {
+        date: "2021-03-01",
+        description: "Bułka ardeńska z sałatką warzywną",
+        contains: "orzechy, orzeszki ziemne",
+        composition:
+          "bułka(mąkka przenna), cieciorka, papryka, groszek, sałatka rzymśka",
+        dietTitle: "Kanapka",
+        nutValue: 205,
+        energyValue: 393.7,
+        fats: 9.8,
+        carbohydrates: 60.2,
+        protein: 12.2
+      },
+      {
+        date: "2021-03-01",
+        description: "asdasdasdasfas",
+        contains: "orzechy",
+        composition: "cieciorka, papryka, groszek, sałatka rzymśka",
+        dietTitle: "Deser",
+        nutValue: 125,
+        energyValue: 203.7,
+        fats: 1.3,
+        carbohydrates: 67.2,
+        protein: 2.2
+      },
+      {
+        date: "2021-03-02",
+        description: "Zupa",
+        contains: "orzechy, orzeszki ziemne",
+        composition: "papryka, groszek, sałatka rzymśka",
+        dietTitle: "Zupa",
+        nutValue: 150,
+        energyValue: 321.7,
+        fats: 5.8,
+        carbohydrates: 44.2,
+        protein: 8.2
+      }
+    ]
   },
   mutations: {
     changeBar(state, payload) {

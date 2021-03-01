@@ -49,7 +49,7 @@
               <h6 v-if="getDishType == 'Diet'">
                 <b>Posiłek:&#8195;</b>{{ dish ? dish + "/5" : "-/5" }}
               </h6>
-              <h6 v-else>
+              <h6 v-else class="barTitle">
                 {{ getActiveForm ? getActiveForm : "Wybierz rodzaj baru" }}
               </h6>
             </div>
@@ -58,7 +58,7 @@
           <div>
             <DietSticker
               v-if="getDishType == 'Diet'"
-              v-bind:dietData="dietData"
+              v-bind:dietData="getMyDiet()"
               v-bind:redactMode="redactMode"
               v-bind:selectedDate="selectedDate"
               v-bind:dish="dish"
@@ -67,7 +67,7 @@
             <BarSticker
               v-else-if="getDishType == 'Bar'"
               v-bind:redactMode="redactMode"
-              v-bind:barData="barData"
+              v-bind:barData="getMyDiet()"
               v-bind:selectedDate="selectedDate"
               v-bind:form="form"
             />
@@ -95,7 +95,7 @@
           size="sm"
           title="Edytuj danę na naklejcę"
           class="mb-2"
-          :disabled="!form"
+          :disabled="!redactOn"
         >
           <b-icon icon="pencil-square" aria-hidden="true"></b-icon>
           Edytować
@@ -121,6 +121,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import DietSticker from "./DietSticker";
 import BarSticker from "./BarSticker";
 import { mapActions } from "vuex";
+import * as _ from "lodash";
 
 export default {
   name: "Sticker",
@@ -134,36 +135,47 @@ export default {
     dishLength: [],
     dish: null,
     form: "",
+    redactOn: false,
   }),
   props: ["dietData", "barData", "getActiveForm", "getDishType", "redactMode"],
-  created() {
-    for (let date in this.dietData) {
-      this.dateLength.push(date);
-    }
-  },
   beforeUpdate() {
-    //Отображаем количество блюд по определнной дате
-    if (
-      this.dietData[this.selectedDate] &&
-      this.dietData[this.selectedDate].length != this.dishLength.length
-    ) {
-      this.dishLength = [];
-      for (let i = 1; i < this.dietData[this.selectedDate].length; i++) {
-        if (this.dietData[this.selectedDate][i] != null) {
-          this.dishLength.push(i);
-        }
-      }
-    } else if (this.dietData[this.selectedDate]) {
-      for (let i = 1; i < this.dietData[this.selectedDate].length; i++) {
-        if (this.dietData[this.selectedDate][i] != null) {
-          this.dishLength.push(i);
-        }
-      }
-    }
-
     this.form = this.transformDietForm(this.getActiveForm);
+    this.dateLength = this.getDate;
+
+    this.dishLength = this.getDishLength;
+    this.getMyDiet();
+    this.canRedact();
+  },
+  watch: {
+    dateLength() {
+      for (let date of this.dateLength) {
+        if (this.selectedDate != date) {
+          this.selectedDate = null;
+        }
+      }
+    },
+    getActiveForm() {},
   },
   computed: {
+    getDate() {
+      //Сортируем данные для получения уникальных дат в БД
+      this.getFormList();
+      let dateArr = [];
+      let duplicatesArr = _.uniqBy(this.getDishList(), "date");
+      for (let item of duplicatesArr) {
+        dateArr.push(item.date);
+      }
+      return dateArr;
+    },
+    getDishLength() {
+      //Показываем список номеров диет из выбраной формы диеты
+      let uniqDish = _.uniqBy(this.getDishList(), "dish");
+      let dishLength = [];
+      for (let item of uniqDish) {
+        dishLength.push(item.dish);
+      }
+      return dishLength;
+    },
     //Определяем срок годности товара от выбраной даты
     setShelfLifeDate() {
       let dateArr = "";
@@ -194,10 +206,68 @@ export default {
   },
   methods: {
     ...mapActions(["setRedactMode"]),
+    canRedact() {
+      if (this.getMyDiet()) {
+        this.redactOn = true;
+      } else {
+        this.redactOn = false;
+      }
+    },
+    getDishList() {
+      //Фильтруем информацию по форме диеты
+      let sortDishArr;
+      if (this.getDishType === "Diet") {
+        sortDishArr = this.dietData.filter((item) => {
+          return item.dietTitle == this.form;
+        });
+      }
+      if (this.getDishType === "Bar") {
+        sortDishArr = this.barData.filter((item) => {
+          return item.dietTitle == this.form;
+        });
+      }
+      return sortDishArr;
+    },
+    getFormList() {
+      //Проверяем есть ли выбранная форма диеты из списка в формах БД для дальнейшего отображения даты
+      let formArr;
+      if (this.getDishType === "Diet") {
+        formArr = _.uniqBy(this.dietData, "dietTitle");
+      }
+      if (this.getDishType === "Bar") {
+        formArr = _.uniqBy(this.barData, "dietTitle");
+      }
+      let list = [];
+      for (let item of formArr) {
+        list.push(item.dietTitle);
+      }
+      let result = list.includes(this.form);
+      if (!result) {
+        this.selectedDate = null;
+      }
+    },
+    getMyDiet() {
+      //Получаем нужный итем из БД для отображения на наклейке
+      if (this.getDishType === "Diet") {
+        let myDiet = this.dietData.filter((e) => {
+          return (
+            e.date == this.selectedDate &&
+            e.dish == this.dish &&
+            e.dietTitle == this.form
+          );
+        });
+        return myDiet[0];
+      }
+      if (this.getDishType === "Bar") {
+        let myBar = this.barData.filter((e) => {
+          return e.date == this.selectedDate && e.dietTitle == this.form;
+        });
+        return myBar[0];
+      }
+    },
     redactModeOn() {
       this.setRedactMode(true);
     },
-
     transformDietForm(oldForm) {
       //Делаем из названия диеты, форму диеты для обработки запросов
       let newForm = oldForm.split(" ").slice(0, -1);
@@ -213,12 +283,17 @@ export default {
       let styleh6 = "h6{margin: 5px 20px; font-size:9px;}";
       let styleP = "p{font-size:10px; margin:10px; word-wrap: break-word; }";
       let styleColdHeat = ".coldHeat{font-size:7px; margin:0px 2px 5px 10px}";
-      let styleSpan = "span{font-size:7px; margin:0px 2px 5px 10px}";
+      let styleSpan = "span{font-size:7px; margin:0px 2px 2px 10px;}";
+      let styleValue =
+        ".value{font-size:6px; display:flex; flex-direction:column}";
+      let styleInfo = ".info{font-size:5.5px; position:relative; top:5px}";
       let styleFooterInfo =
-        ".footerInfo{font-size:7px; position:relative; top:10px; left:50px; display:flex; flex-direction:column}";
+        ".footerInfo{font-size:6px; position:relative; top:10px; left:50px; display:flex; flex-direction:column}";
       newWindow.document.write(
         `<style>${
           stylesMain +
+          styleValue +
+          styleInfo +
           styleColdHeat +
           stylesIdSpan +
           styleh3 +
@@ -232,13 +307,13 @@ export default {
       newWindow.document.write(document.getElementById("sticker").innerHTML);
       newWindow.document.write("</div>");
       newWindow.print();
-      newWindow.close();
+      // newWindow.close();
     },
   },
 };
 </script>
 
-<style  lang="scss">
+<style lang="scss">
 .headerSticker {
   display: flex;
   margin: 40px 0px;
@@ -287,9 +362,13 @@ export default {
     word-wrap: break-word;
     max-width: 220px;
   }
+  .barTitle {
+    font-size: 18px;
+  }
   h6 {
-    margin: 10px 50px;
-    font-size: 12px;
+    margin: 10px 0px;
+    font-size: 14px;
+    text-align: center;
   }
   p {
     font-size: 14px;
@@ -340,7 +419,7 @@ textarea {
   }
 }
 .footerInfo {
-  margin: 20px;
+  margin: 5px 20px;
   font-size: 10px;
   display: flex;
   flex-direction: column;

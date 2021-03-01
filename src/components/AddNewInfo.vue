@@ -72,34 +72,10 @@
         >Dodaj</b-button
       >
     </form>
-
-    <!-- ПЕРЕДЕЛАТЬ ТОСТЫ!!! ПРИ РЕЗКОМ ИЗМЕНЕНИИ СТАТУСА МЕНЯЕТСЯ И ТОСТ! -->
-    <!-- <b-toast
-      v-if="submitStatus == 'ERROR'"
-      id="toast"
-      class="myToast"
-      title="Wystąpil bląd!!!"
-      variant="danger"
-      static
-      append-toast
-      >Coś poszło nie tak, sprobój jeszcze raz!!!
-    </b-toast>
-    <b-toast
-      v-if="submitStatus == 'SUCCESS'"
-      id="toast"
-      class="myToast"
-      title="Udało się!"
-      variant="success"
-      static
-      append-toast
-      >Nowa dieta była dodana!!!
-    </b-toast> -->
-    <!-- ПЕРЕДЕЛАТЬ ТОСТЫ!!! ПРИ РЕЗКОМ ИЗМЕНЕНИИ СТАТУСА МЕНЯЕТСЯ И ТОСТ! -->
   </div>
 </template>
 
 <script>
-//Пропал тоаст после обработки валидатором
 import AddNewDiet from "./addNewInfo/AddNewDiet";
 import AddNewSnackBar from "./addNewInfo/AddNewSnackBar";
 import { required } from "vuelidate/lib/validators";

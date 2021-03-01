@@ -13,7 +13,7 @@
       ></b-form-radio-group>
     </b-form-group>
     <h4>{{ dishType }}</h4>
-    <b-list-group>
+    <b-list-group v-if="!redactMode">
       <b-list-group-item
         class="diet"
         v-for="(diet, i) of dietsList"
@@ -31,7 +31,7 @@
 import { mapActions } from "vuex";
 export default {
   name: "DietsList",
-  props: ["allDiets", "snackBar"],
+  props: ["allDiets", "snackBar", "redactMode"],
   data: () => ({
     dietsList: [],
     active: "",
@@ -46,6 +46,11 @@ export default {
     this.dietsList = this.setDiets;
     this.changeDishType(this.dishType);
   },
+  watch: {
+    dishType() {
+      this.setActiveForm("");
+    },
+  },
   computed: {
     setDiets() {
       let dietsList = [];
@@ -57,7 +62,6 @@ export default {
         }
       }
       if (this.dishType === "Bar") {
-        // this.setDishType(this.dishType);
         for (let bar of this.snackBar) {
           for (let calories of bar.dietColories) {
             dietsList.push(bar.dietTitle + " " + calories);

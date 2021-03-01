@@ -12,10 +12,11 @@
       <DietsList
         v-bind:allDiets="getState.diets.dietsList"
         v-bind:snackBar="getState.snackBar.barList"
+        v-bind:redactMode="getState.redactMode"
       />
       <Sticker
         v-bind:dietData="getState.diets.dietData"
-        v-bind:barDate="getState.snackBar.barDate"
+        v-bind:barData="getState.snackBar.barData"
         v-bind:getActiveForm="getState.activeForm"
         v-bind:getDishType="getState.dishType"
         v-bind:redactMode="getState.redactMode"

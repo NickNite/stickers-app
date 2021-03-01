@@ -6,7 +6,7 @@ const SnackBarData = new Schema({
   description: String,
   contains: String,
   composition: String,
-  dietsTitle: String,
+  dietTitle: String,
   nutValue: Number,
   energyValue: Number,
   carbohydrates: Number,

@@ -31,7 +31,78 @@ export default {
         dietColories: ["Pakiet-M", "Pakiet-XL"]
       }
     ],
-    dietData: []
+    dietData: [
+      {
+        date: "2021-03-01",
+        dish: "1",
+        description: "Placki z jogurtem bananowym",
+        contains: "Młeko",
+        allergens: "łaktoza",
+        dietTitle: "Slim",
+        eat: ["ciepło", "zimno"],
+        _id: "23454235345"
+      },
+      {
+        date: "2021-03-01",
+        dish: "2",
+        description: "Ksdqdwqdqwd",
+        contains: "qweqw",
+        allergens: "łaktovmnmvza",
+        dietTitle: "Slim",
+        eat: ["ciepło", "zimno"],
+        _id: "23425353235"
+      },
+      {
+        date: "2021-03-01",
+        dish: "3",
+        description: "Wertgryl;dfb d;fogdgdklfjg",
+        contains: "asdas",
+        allergens: "uioui",
+        dietTitle: "Slim",
+        eat: ["ciepło", "zimno"],
+        _id: "234263534215"
+      },
+      {
+        date: "2021-03-01",
+        dish: "4",
+        description: "Powesdlfksdnsdvc",
+        contains: "Młevbcvbko",
+        allergens: "łaktoguiza",
+        dietTitle: "Slim",
+        eat: ["ciepło", "zimno"],
+        _id: "2342354212345"
+      },
+      {
+        date: "2021-03-02",
+        dish: "1",
+        description: "fksdnsdvc",
+        contains: "qqMłevbcvbko",
+        allergens: "qqłaktoguiza",
+        dietTitle: "Sport",
+        eat: ["ciepło", "zimno"],
+        _id: "2342354234511211"
+      },
+      {
+        date: "2021-03-02",
+        dish: "2",
+        description: "Powesdlfksdnsdvc",
+        contains: "Młevbcvbko",
+        allergens: "łaktoguiza",
+        dietTitle: "Sport",
+        eat: ["ciepło", "zimno"],
+        _id: "23423542341215"
+      },
+      {
+        date: "2021-03-02",
+        dish: "3",
+        description: "Powesdlfksdnsdvc",
+        contains: "Młevbcvbko",
+        allergens: "łaktoguiza",
+        dietTitle: "Wege",
+        eat: ["ciepło", "zimno"],
+        _id: "23423542341235"
+      }
+    ]
   },
   mutations: {
     changeDiet(state, payload) {
@@ -59,7 +130,7 @@ export default {
     //   return axios.put(`${hostName}/api/dietdata`, payload)
     // },
     addNewDiets({ commit }, payload) {
-      commit('changeDietData', payload)
+      commit("changeDietData", payload);
       // return axios.post(`${hostName}/api/dietdata`, payload);
       console.log(payload);
     }
