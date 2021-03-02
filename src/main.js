@@ -2,8 +2,9 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
-import Vuelidate from 'vuelidate'
+import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
+import Vuelidate from "vuelidate";
+Vue.config.devtools = true;
 
 //To jest Demo applikacji do wydrukowania nakleek
 //Это Демо-версия приложение для печати наклеек

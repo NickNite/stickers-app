@@ -57,7 +57,7 @@
           :key="{ diet } + i"
           :id="diet"
           :value="diet"
-          v-model="$v.dietsTitle.$model"
+          v-model="$v.dietTitle.$model"
           >{{ diet }}</b-form-checkbox
         >
       </footer>
@@ -94,7 +94,7 @@ export default {
     maxMinDate: [],
     date: "",
     dish: "",
-    dietsTitle: [],
+    dietTitle: [],
     newInfo: {
       error: "ERROR",
     },
@@ -102,7 +102,7 @@ export default {
   validations: {
     date: { required },
     dish: { required },
-    dietsTitle: { required },
+    dietTitle: { required },
   },
   created() {
     this.maxMinDate = this.limitDate;
@@ -195,7 +195,7 @@ export default {
           description: this.newInfo.description,
           contains: this.newInfo.contains,
           allergens: this.newInfo.allergens,
-          dietsTitle: this.dietsTitle,
+          dietTitle: this.dietTitle,
           eat: this.newInfo.eat,
         };
         this.$v.$touch();
@@ -209,7 +209,7 @@ export default {
           this.addNewDiets(diet);
           this.date = "";
           this.dish = "";
-          this.dietsTitle = [];
+          this.dietTitle = [];
         }
       }
       if (this.dishType == "Bar") {
@@ -219,7 +219,7 @@ export default {
           description: this.newInfo.description,
           contains: this.newInfo.contains,
           composition: this.newInfo.composition,
-          dietsTitle: this.dietsTitle,
+          dietTitle: this.dietTitle,
           nutValue: this.newInfo.nutValue,
           energyValue: this.newInfo.energyValue,
           fats: this.newInfo.fats,
@@ -236,7 +236,7 @@ export default {
           this.setSubmitStatus("SUCCESS");
           this.addNewSnackBar(bar);
           this.date = "";
-          this.dietsTitle = [];
+          this.dietTitle = [];
         }
       }
     },

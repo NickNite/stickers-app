@@ -112,7 +112,7 @@
             ></b-form-input>
           </div>
         </div>
-        <div class="buttForm" :class="redactMode ? 'marginButt' : ''">
+        <div class="buttForm marginButt">
           <b-button class="buttPos" type="submit" variant="outline-success">
             <b-icon icon="check-circle" aria-hidden="true"></b-icon>
             &#8195;Zatwierdzić</b-button
@@ -217,16 +217,20 @@ export default {
     redactData() {
       let dishInfo = {
         date: this.selectedDate,
-        dish: this.dish,
         form: this.form,
-      };
-      let data = {
         description: this.description,
         contains: this.contains,
-        allergens: this.allergens,
+        composition: this.composition,
+        nutValue: this.nutValue,
+        energyValue: this.energyValue,
+        carbohydrates: this.carbohydrates,
+        protein: this.protein,
+        fats: this.fats,
+        id: this.barData._id,
       };
-      this.setDishInfo({ dishInfo, data });
-      this.redactMode = false;
+
+      this.setDishInfo(dishInfo);
+      this.setRedactMode(false);
     },
   },
 };
@@ -260,7 +264,7 @@ export default {
   }
 }
 .marginButt {
-  margin-top: 150px !important;
+  margin-top: 120px !important;
 }
 .infoInput {
   div {

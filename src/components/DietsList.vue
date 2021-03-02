@@ -19,7 +19,7 @@
         v-for="(diet, i) of dietsList"
         :key="{ diet } + i"
         button
-        variant="light"
+        :class="{ actived: diet == active }"
         @click="activeDiet"
         >{{ diet }}</b-list-group-item
       >
@@ -33,6 +33,7 @@ export default {
   name: "DietsList",
   props: ["allDiets", "snackBar", "redactMode"],
   data: () => ({
+    loader: true,
     dietsList: [],
     active: "",
     dishType: "Diet",
@@ -107,8 +108,8 @@ li {
 span:hover {
   cursor: pointer;
 }
-.active {
-  background: lightgray;
+.actived {
+  background: #dee2e6;
 }
 .radio {
   margin-top: 15px;

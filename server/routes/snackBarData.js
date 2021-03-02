@@ -1,29 +1,35 @@
-const express = require('express');
+const express = require("express");
 const routerSnackBarData = express.Router();
 
-const SnackBarData = require('../models/SnackBarData');
+const SnackBarData = require("../models/SnackBarData");
 
-//Настраиваем end point для Rest API 
-routerSnackBarData.get('/', async (req, res) => {
-        res.json(await SnackBarData.find());
-    });
-
-routerSnackBarData.post('/', async (req, res) => {
-    const record = new SnackBarData(req.body);
-    await record.save();
-    try {
-        res.json({ state: 'success' });
-    }
-    catch {
-        res.json({ state: 'error' });
-    }
+//Настраиваем end point для Rest API
+routerSnackBarData.get("/", async (req, res) => {
+  res.status(200).json(await SnackBarData.find());
 });
 
-// routerDietData.put('/:id', async (req, res) => {
-//     await Record.findByIdAndUpdate(req.params.id, req.body);
-//     res.json({ state: 'updated' });
-// });
+routerSnackBarData.post("/", async (req, res) => {
+  console.log(req.body);
+  try {
+    const record = new SnackBarData(req.body);
+    await record.save();
+    res.writeHead(201, "OK", { "Content-Type": "text/plain" });
+    res.end();
+  } catch {
+    res.writeHead(404, "Not Found", { "Content-Type": "text/plain" });
+    res.end();
+  }
+});
 
-
+routerSnackBarData.put("/:id", async (req, res) => {
+  try {
+    await SnackBarData.findByIdAndUpdate(req.params.id, req.body);
+    res.writeHead(200, "Updated", { "Content-Type": "text/plain" });
+    res.end();
+  } catch {
+    res.writeHead(404, "ERROR", { "Content-Type": "text/plain" });
+    res.end();
+  }
+});
 
 module.exports = routerSnackBarData;

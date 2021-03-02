@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import diets from "./modules/diets/diets";
 import snackBar from "./modules/snackBar/snackBar";
+Vue.config.devtools = true;
 
 Vue.use(Vuex);
 
@@ -9,7 +10,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     redactMode: false,
-    loading: false,
+    loading: true,
     activeForm: "",
     dishType: "Diet",
     submitStatus: ""

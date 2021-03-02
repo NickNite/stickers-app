@@ -88,6 +88,7 @@ export default {
       let eat = [];
       if (!this.redactMode) {
         if (
+          this.dietData &&
           this.selectedDate &&
           this.selectedDate == this.dietData.date &&
           this.dish &&
@@ -126,14 +127,14 @@ export default {
         date: this.selectedDate,
         dish: this.dish,
         form: this.form,
-      };
-      let data = {
         description: this.description,
         contains: this.contains,
         allergens: this.allergens,
+        eat: this.eat,
+        id: this.dietData._id,
       };
-      this.setDishInfo({ dishInfo, data });
-      this.redactMode = false;
+      this.setDishInfo(dishInfo);
+      this.setRedactMode(false);
     },
   },
 };

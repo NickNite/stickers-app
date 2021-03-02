@@ -6,11 +6,11 @@ const SnackBarData = new Schema({
   description: String,
   contains: String,
   composition: String,
-  dietTitle: String,
-  nutValue: Number,
-  energyValue: Number,
-  carbohydrates: Number,
-  protein: Number,
-  fats: Number
+  dietTitle: Array,
+  nutValue: String,
+  energyValue: String,
+  carbohydrates: String,
+  protein: String,
+  fats: String
 });
 module.exports = mongoose.model("SnackBarData", SnackBarData);

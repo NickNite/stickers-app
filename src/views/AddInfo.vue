@@ -2,7 +2,7 @@
   <div class="main">
     <div>
       <AddNewInfo
-        v-bind:allDiets="getState.diets.dietsList"
+        v-bind:allDiets="getState.diets.dietList"
         v-bind:snackBar="getState.snackBar.barList"
         v-bind:submitStatus="getState.submitStatus"
       />
