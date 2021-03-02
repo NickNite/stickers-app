@@ -21,6 +21,7 @@ routerDietData.post("/", async (req, res) => {
 });
 
 routerDietData.put("/:id", async (req, res) => {
+  console.log(req.body)
   try {
     await DietData.findByIdAndUpdate(req.params.id, req.body);
     res.writeHead(200, "Updated", { "Content-Type": "text/plain" });

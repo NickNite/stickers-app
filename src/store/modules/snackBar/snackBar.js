@@ -86,7 +86,7 @@ export default {
 
     setBarInfo({ commit }, payload) {
       commit("test", "test");
-      return axios.put(`${hostName}/api/snackbardata/${payload._id}`, payload);
+      return axios.put(`${hostName}/api/snackbardata/${payload.id}`, payload);
     },
     addNewSnackBar({ commit }, payload) {
       commit("changeBarData", payload);

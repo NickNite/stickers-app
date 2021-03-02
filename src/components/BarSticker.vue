@@ -209,7 +209,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["setDishInfo", "setRedactMode"]),
+    ...mapActions(["setBarInfo", "setRedactMode"]),
 
     redactModeOff() {
       this.setRedactMode(false);
@@ -217,7 +217,7 @@ export default {
     redactData() {
       let dishInfo = {
         date: this.selectedDate,
-        form: this.form,
+        dietTitle: this.form,
         description: this.description,
         contains: this.contains,
         composition: this.composition,
@@ -229,7 +229,7 @@ export default {
         id: this.barData._id,
       };
 
-      this.setDishInfo(dishInfo);
+      this.setBarInfo(dishInfo);
       this.setRedactMode(false);
     },
   },

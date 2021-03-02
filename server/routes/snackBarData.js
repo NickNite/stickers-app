@@ -22,6 +22,7 @@ routerSnackBarData.post("/", async (req, res) => {
 });
 
 routerSnackBarData.put("/:id", async (req, res) => {
+  console.log(req.body)
   try {
     await SnackBarData.findByIdAndUpdate(req.params.id, req.body);
     res.writeHead(200, "Updated", { "Content-Type": "text/plain" });

@@ -137,17 +137,8 @@ export default {
     form: "",
     redactOn: false,
   }),
-  props: [
-    "getDishList",
-    "getFormList",
-    "getActiveForm",
-    "getDishType",
-    "redactMode",
-  ],
+  props: ["dietData", "barData", "getActiveForm", "getDishType", "redactMode"],
   beforeUpdate() {
-    if (!this.getFormList) {
-      this.selectedDate = null;
-    }
     this.form = this.transformDietForm(this.getActiveForm);
     this.dateLength = this.getDate;
 
@@ -172,16 +163,15 @@ export default {
   computed: {
     getDate() {
       //Сортируем данные для получения уникальных дат в БД
-
+      this.getFormList();
       let dateArr = [];
-      let duplicatesArr = _.uniqBy(this.getDishList, "date");
+      let duplicatesArr = _.uniqBy(this.getDishList(), "date");
       for (let item of duplicatesArr) {
         dateArr.push(item.date);
       }
       return dateArr;
     },
     getDishLength() {
-      console.log(this.getDishList);
       //Показываем список номеров диет из выбраной формы диеты
       let dateArr = this.getDishList().filter((i) => {
         return i.date == this.selectedDate;
@@ -190,7 +180,6 @@ export default {
       for (let item of dateArr) {
         dishLength.push(item.dish);
       }
-      console.log(dateArr);
       return dishLength;
     },
     //Определяем срок годности товара от выбраной даты
@@ -230,45 +219,44 @@ export default {
         this.redactOn = false;
       }
     },
-    // getDishList() {
-    //   //Фильтруем информацию по форме диеты
-    //   let sortDishArr;
-    //   if (this.dietData && this.getDishType === "Diet") {
-    //     sortDishArr = this.dietData.filter((item) => {
-    //       return item.dietTitle == this.form;
-    //     });
-    //   }
-    //   if (this.dietData && this.getDishType === "Bar") {
-    //     sortDishArr = this.barData.filter((item) => {
-    //       return item.dietTitle == this.form;
-    //     });
-    //   }
+    getDishList() {
+      //Фильтруем информацию по форме диеты
+      let sortDishArr;
+      if (this.dietData && this.getDishType === "Diet") {
+        sortDishArr = this.dietData.filter((item) => {
+          return item.dietTitle == this.form;
+        });
+      }
+      if (this.barData && this.getDishType === "Bar") {
+        sortDishArr = this.barData.filter((item) => {
+          return item.dietTitle == this.form;
+        });
+      }
 
-    //   return sortDishArr;
-    // },
-    // getFormList() {
-    //   //Проверяем есть ли выбранная форма диеты из списка в формах БД для дальнейшего отображения даты
-    //   let formArr;
-    //   if (this.getDishType === "Diet") {
-    //     formArr = _.uniqBy(this.dietData, "dietTitle");
-    //   }
-    //   if (this.getDishType === "Bar") {
-    //     formArr = _.uniqBy(this.barData, "dietTitle");
-    //   }
-    //   let list = [];
-    //   for (let item of formArr) {
-    //     list.push(item.dietTitle);
-    //   }
-    //   let result = list.includes(this.form);
-    //   if (!result) {
-    //     this.selectedDate = null;
-    //   }
-    // },
+      return sortDishArr;
+    },
+    getFormList() {
+      //Проверяем есть ли выбранная форма диеты из списка в формах БД для дальнейшего отображения даты
+      let formArr;
+      if (this.getDishType === "Diet") {
+        formArr = _.uniqBy(this.dietData, "dietTitle");
+      }
+      if (this.getDishType === "Bar") {
+        formArr = _.uniqBy(this.barData, "dietTitle");
+      }
+      let list = [];
+      for (let item of formArr) {
+        list.push(item.dietTitle);
+      }
+      let result = list.includes(this.form);
+      if (!result) {
+        this.selectedDate = null;
+      }
+    },
     getMyDiet() {
-      console.log(this.getDishList());
       //Получаем нужный итем из БД для отображения на наклейке
       if (this.getDishType === "Diet") {
-        let myDiet = this.getDishList().filter((e) => {
+        let myDiet = this.dietData.filter((e) => {
           return (
             e.date == this.selectedDate &&
             e.dish == this.dish &&
@@ -278,7 +266,7 @@ export default {
         return myDiet[0];
       }
       if (this.getDishType === "Bar") {
-        let myBar = this.getDishList().filter((e) => {
+        let myBar = this.barData.filter((e) => {
           return e.date == this.selectedDate && e.dietTitle == this.form;
         });
         return myBar[0];
