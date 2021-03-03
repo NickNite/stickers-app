@@ -10,7 +10,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     redactMode: false,
-    loading: true,
+    loading: false,
     activeForm: "",
     dishType: "Diet",
     submitStatus: ""

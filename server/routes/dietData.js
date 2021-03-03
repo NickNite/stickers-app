@@ -21,7 +21,7 @@ routerDietData.post("/", async (req, res) => {
 });
 
 routerDietData.put("/:id", async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   try {
     await DietData.findByIdAndUpdate(req.params.id, req.body);
     res.writeHead(200, "Updated", { "Content-Type": "text/plain" });
@@ -30,6 +30,11 @@ routerDietData.put("/:id", async (req, res) => {
     res.writeHead(404, "ERROR", { "Content-Type": "text/plain" });
     res.end();
   }
+});
+DietData.deleteMany({ date: "2021-03-03" }, function(err, result) {
+  if (err) return console.log("ERROR", err);
+
+  console.log("SUCCESS", result);
 });
 
 module.exports = routerDietData;

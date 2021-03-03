@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!redactMode">
+    <div class="dishDescrp" v-if="!redactMode">
       <p v-if="description">
         {{ description }}
       </p>
@@ -63,7 +63,14 @@
 import { mapActions } from "vuex";
 export default {
   name: "DietBar",
-  props: ["dietData", "redactMode", "selectedDate", "dish", "form"],
+  props: [
+    "dietData",
+    "redactMode",
+    "selectedDate",
+    "dish",
+    "form",
+    "getDescrpLength",
+  ],
   data: () => ({
     description: "",
     contains: "",
@@ -78,8 +85,14 @@ export default {
       this.allergens = this.setDishData.allerg;
       this.eat = this.setDishData.eat;
     },
+    description() {
+      this.getDescrpLength(this.getDesLength);
+    },
   },
   computed: {
+    getDesLength() {
+      return this.description.length;
+    },
     setDishData() {
       //Отображаем данные из БД если нету режима редактирования и проходит проверку на присутствие данных
       let descr = "";
@@ -117,7 +130,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["setDishInfo", "setRedactMode"]),
+    ...mapActions(["setDishInfo", "setRedactMode", "getDietData"]),
 
     redactModeOff() {
       this.setRedactMode(false);
@@ -135,8 +148,9 @@ export default {
       };
       this.setDishInfo(dishInfo);
       this.setRedactMode(false);
+      this.getDietData();
     },
   },
 };
 </script>
-<style scoped></style>
+<style></style>

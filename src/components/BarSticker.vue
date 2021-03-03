@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!redactMode">
+    <div class="dishDescrpBar" v-if="!redactMode">
       <p v-if="description">
         {{ description }}
       </p>
@@ -134,7 +134,14 @@
 import { mapActions } from "vuex";
 export default {
   name: "BarSticker",
-  props: ["barData", "redactMode", "selectedDate", "form"],
+  props: [
+    "barData",
+    "redactMode",
+    "selectedDate",
+    "form",
+    "getSnackBarData",
+    "getDescrpLength",
+  ],
   data: () => ({
     description: "",
     contains: "",
@@ -157,8 +164,14 @@ export default {
       this.protein = this.setDishData.prot;
       this.fats = this.setDishData.fat;
     },
+    description() {
+      this.getDescrpLength(this.getDesLength);
+    },
   },
   computed: {
+    getDesLength() {
+      return this.description.length;
+    },
     setDishData() {
       //Отображаем данные из БД если нету режима редактирования и проходит проверку на присутствие данных
       let descr = "";
@@ -231,6 +244,7 @@ export default {
 
       this.setBarInfo(dishInfo);
       this.setRedactMode(false);
+      this.getSnackBarData();
     },
   },
 };

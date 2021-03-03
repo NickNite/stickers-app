@@ -107,6 +107,10 @@ export default {
   created() {
     this.maxMinDate = this.limitDate;
   },
+  beforeUpdate() {
+    if (this.dishType == "Diet") this.getDietData();
+    if (this.dishType == "Bar") this.getSnackBarData();
+  },
   computed: {
     limitDate() {
       //Создаем минимальную и максимальную дату для календаря
@@ -161,7 +165,13 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["addNewDiets", "addNewSnackBar", "setSubmitStatus"]),
+    ...mapActions([
+      "addNewDiets",
+      "addNewSnackBar",
+      "setSubmitStatus",
+      "getDietData",
+      "getSnackBarData",
+    ]),
     makeToast(append = false) {
       if (this.newInfo.error == "ERROR") {
         this.$bvToast.toast(`Coś poszło nie tak, sprobój jeszcze raz!!!`, {

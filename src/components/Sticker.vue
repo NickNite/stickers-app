@@ -37,19 +37,19 @@
       <div class="sticker">
         <div id="sticker">
           <div class="headSticker">
-            <div>
-              <h3 v-if="getDishType == 'Diet'">
+            <div class="dishTitle" v-if="getDishType == 'Diet'">
+              <h3>
                 {{
                   getActiveForm
-                    ? getActiveForm.toUpperCase()
+                    ? dishTitle.toUpperCase()
                     : "Wybierz rodzaj diety"
                 }}
               </h3>
-              <h3 v-else>SNACK BAR</h3>
-              <h6 v-if="getDishType == 'Diet'">
-                <b>Posiłek:&#8195;</b>{{ dish ? dish + "/5" : "-/5" }}
-              </h6>
-              <h6 v-else class="barTitle">
+              <h6>Posiłek:&#8195;{{ dish ? dish + "/5" : "-/5" }}</h6>
+            </div>
+            <div class="dishTitle" v-else>
+              <h3>SNACK BAR</h3>
+              <h6>
                 {{ getActiveForm ? getActiveForm : "Wybierz rodzaj baru" }}
               </h6>
             </div>
@@ -63,6 +63,7 @@
               v-bind:selectedDate="selectedDate"
               v-bind:dish="dish"
               v-bind:form="form"
+              v-bind:getDescrpLength="getDescrpLength"
             />
             <BarSticker
               v-else-if="getDishType == 'Bar'"
@@ -70,6 +71,7 @@
               v-bind:barData="getMyDiet()"
               v-bind:selectedDate="selectedDate"
               v-bind:form="form"
+              v-bind:getDescrpLength="getDescrpLength"
             />
           </div>
           <div class="footerInfo">
@@ -136,31 +138,72 @@ export default {
     dish: null,
     form: "",
     redactOn: false,
+    dishTitle: "",
+    titleLength: 0,
+    descrpLength: 0,
   }),
   props: ["dietData", "barData", "getActiveForm", "getDishType", "redactMode"],
   beforeUpdate() {
     this.form = this.transformDietForm(this.getActiveForm);
+    this.dishTitle = this.transformDishTitle(this.getActiveForm);
     this.dateLength = this.getDate;
-
     this.dishLength = this.getDishLength;
     this.getMyDiet();
     this.canRedact();
+    this.titleLength = this.dishTitle.length;
+    this.getDescrpLength();
+    this.setTitleSizeInApp();
   },
   watch: {
-    dateLength() {
-      for (let date of this.dateLength) {
-        if (this.selectedDate != date) {
-          this.selectedDate = null;
-        }
-      }
-    },
     dishLength() {
       if (!this.dishLength.includes(this.dish)) {
         this.dish = null;
       }
     },
+    descrpLength() {
+      this.setDescrpSizeInApp();
+    },
   },
   computed: {
+    setDescrpSize() {
+      //Функция авторегулирование размера шрифта в описании
+      let descrpSize = ["", ""];
+      if (this.descrpLength <= 20) {
+        descrpSize[0] = "20px";
+        descrpSize[1] = "19px";
+      } else if (this.descrpLength > 20 && this.descrpLength <= 50) {
+        descrpSize[0] = "17px";
+        descrpSize[1] = "16px";
+      } else if (this.descrpLength > 51 && this.descrpLength <= 80) {
+        descrpSize[0] = "16px";
+        descrpSize[1] = "10px";
+      } else if (this.descrpLength > 80) {
+        descrpSize[0] = "15px";
+        descrpSize[1] = "8px";
+      }
+      return descrpSize;
+    },
+    setTitleSize() {
+      //Функция авторегулирование размера шрифта в названии
+      let titleSize = ["", ""];
+      if (this.titleLength <= 15) {
+        titleSize[0] = "20px";
+        titleSize[1] = "15px";
+      } else if (this.titleLength > 15 && this.titleLength <= 19) {
+        titleSize[0] = "17px";
+        titleSize[1] = "13px";
+      } else if (this.titleLength > 19 && this.titleLength <= 33) {
+        titleSize[0] = "16px";
+        titleSize[1] = "12px";
+      } else if (this.titleLength > 33 && this.titleLength <= 42) {
+        titleSize[0] = "15px";
+        titleSize[1] = "10px";
+      } else if (this.titleLength > 42) {
+        titleSize[0] = "13px";
+        titleSize[1] = "8px";
+      }
+      return titleSize;
+    },
     getDate() {
       //Сортируем данные для получения уникальных дат в БД
       this.getFormList();
@@ -212,6 +255,35 @@ export default {
   },
   methods: {
     ...mapActions(["setRedactMode"]),
+    setTitleSizeInApp() {
+      //Выбираем нужное название (Диета\Бар)
+      let title = document.querySelector(".dishTitle");
+      let titleChild;
+      if (this.getDishType == "Diet") {
+        titleChild = title.firstElementChild;
+      }
+      if (this.getDishType == "Bar") {
+        titleChild = title.lastElementChild;
+      }
+
+      titleChild.style.fontSize = this.setTitleSize[0];
+    },
+    setDescrpSizeInApp() {
+      //Выбираем описание в диете или баре
+      let descrp;
+      if (this.getDishType == "Diet") {
+        descrp = document.querySelector(".dishDescrp");
+      }
+      if (this.getDishType == "Bar") {
+        descrp = document.querySelector(".dishDescrpBar");
+      }
+
+      let p = descrp.firstElementChild;
+      p.style.fontSize = this.setDescrpSize[0];
+    },
+    getDescrpLength(num) {
+      this.descrpLength = num;
+    },
     canRedact() {
       if (this.getMyDiet()) {
         this.redactOn = true;
@@ -280,15 +352,34 @@ export default {
       let newForm = oldForm.split(" ").slice(0, -1);
       return newForm.join(" ");
     },
+    transformDishTitle(form) {
+      //Делаем обработку названия из БД для отображения на наклейке
+      let arrEnd = form.split(" ").slice(-1);
+      let newdishTitle = "";
+      if (this.transformDietForm(this.getActiveForm) === "Slim-Bez laktozy") {
+        newdishTitle = `Dieta o bardzo niskej zawartości laktozy ${arrEnd}`;
+      } else if (
+        this.transformDietForm(this.getActiveForm) === "Slim-Bez glutenu"
+      ) {
+        newdishTitle = `Dieta o bardzo niskej zawartości glutenu ${arrEnd}`;
+      } else if (
+        this.transformDietForm(this.getActiveForm) ===
+        "Slim-Bez laktozy i glutenu"
+      ) {
+        newdishTitle = `Dieta o bardzo niskej zawartości laktozy i glutenu ${arrEnd}`;
+      } else {
+        newdishTitle = form;
+      }
+      return newdishTitle;
+    },
     printout() {
       var newWindow = window.open();
       let stylesMain =
-        ".print{width:200px; height:200px; font-family:	Arial; margin-top:10px;}";
+        ".print{width:200px; height:200px; font-family:	Arial; margin-top:10px; border: 1px solid black}";
       let stylesIdSpan = " #span{display:flex; flex-direction: column;}";
-      let styleh3 =
-        "h3{font-weight: 400; margin:30px 0px 2px 10px; font-size:15px; max-width: 220px;}";
+      let styleh3 = `.dishTitle{font-weight: 400; margin:30px 0px 2px 10px; font-size:${this.setTitleSize[1]} !important; max-width: 130px; text-align: center}`;
       let styleh6 = "h6{margin: 5px 20px; font-size:9px;}";
-      let styleP = "p{font-size:10px; margin:10px; word-wrap: break-word; }";
+      let styleP = `p{font-size:${this.setDescrpSize[1]}; margin:10px; word-wrap: break-word; }`;
       let styleColdHeat = ".coldHeat{font-size:7px; margin:0px 2px 5px 10px}";
       let styleSpan = "span{font-size:7px; margin:0px 2px 2px 10px;}";
       let styleValue =
@@ -367,7 +458,8 @@ export default {
     margin: 10px 30px;
     font-size: 20px;
     word-wrap: break-word;
-    max-width: 220px;
+    max-width: 190px;
+    text-align: center;
   }
   .barTitle {
     font-size: 18px;
