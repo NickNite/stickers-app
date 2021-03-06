@@ -26,7 +26,8 @@ export default {
     barData: [
       {
         date: "2021-03-01",
-        description: "Bułka ardeńska z sałatką warzywną",
+        description:
+          "Bułka ardeńska z sałatką warzywną dfasdfsd dfsdf sdfsdf sdfsd weqrqwe sdfsd czxsdf",
         contains: "orzechy, orzeszki ziemne",
         composition:
           "bułka(mąkka przenna), cieciorka, papryka, groszek, sałatka rzymśka",

@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="dishDescrp" v-if="!redactMode">
-      <p v-if="description">
+      <p class="desrcpSticker" v-if="description">
         {{ description }}
       </p>
-      <p v-else>Wybierz danie i datę</p>
+      <p class="desrcpSticker" v-else>Wybierz danie i datę</p>
       <!-- Доделать изменения из базы данных -->
       <div class="coldHeat">Spożywać na {{ eat.join("/") }}</div>
       <!-- Доделать изменения из базы данных -->

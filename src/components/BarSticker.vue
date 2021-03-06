@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="dishDescrpBar" v-if="!redactMode">
-      <p v-if="description">
+      <p class="desrcpSticker" v-if="description">
         {{ description }}
       </p>
-      <p v-else>Wybierz rodzaj i datę</p>
+      <p class="desrcpSticker" v-else>Wybierz rodzaj i datę</p>
       <div class="contains" id="span">
         <span><b>Skład:</b>&#8195;{{ composition || "----" }}</span>
         <span

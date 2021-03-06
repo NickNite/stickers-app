@@ -38,18 +38,20 @@
         <div id="sticker">
           <div class="headSticker">
             <div class="dishTitle" v-if="getDishType == 'Diet'">
-              <h3>
+              <h3 class="titleSticker">
                 {{
                   getActiveForm
                     ? dishTitle.toUpperCase()
                     : "Wybierz rodzaj diety"
                 }}
               </h3>
-              <h6>Posiłek:&#8195;{{ dish ? dish + "/5" : "-/5" }}</h6>
+              <h6 class="h6Sticker">
+                Posiłek:&#8195;{{ dish ? dish + "/5" : "-/5" }}
+              </h6>
             </div>
             <div class="dishTitle" v-else>
-              <h3>SNACK BAR</h3>
-              <h6>
+              <h3 class="snackBatTitle">SNACK BAR</h3>
+              <h6 class="titleSticker">
                 {{ getActiveForm ? getActiveForm : "Wybierz rodzaj baru" }}
               </h6>
             </div>
@@ -170,10 +172,10 @@ export default {
       let descrpSize = ["", ""];
       if (this.descrpLength <= 20) {
         descrpSize[0] = "20px";
-        descrpSize[1] = "19px";
+        descrpSize[1] = "15px";
       } else if (this.descrpLength > 20 && this.descrpLength <= 50) {
         descrpSize[0] = "17px";
-        descrpSize[1] = "16px";
+        descrpSize[1] = "13px";
       } else if (this.descrpLength > 51 && this.descrpLength <= 80) {
         descrpSize[0] = "16px";
         descrpSize[1] = "10px";
@@ -187,8 +189,13 @@ export default {
       //Функция авторегулирование размера шрифта в названии
       let titleSize = ["", ""];
       if (this.titleLength <= 15) {
-        titleSize[0] = "20px";
-        titleSize[1] = "15px";
+        if (this.getDishType == "Bar") {
+          titleSize[0] = "18px";
+          titleSize[1] = "14px";
+        } else {
+          titleSize[0] = "18px";
+          titleSize[1] = "18px";
+        }
       } else if (this.titleLength > 15 && this.titleLength <= 19) {
         titleSize[0] = "17px";
         titleSize[1] = "13px";
@@ -264,6 +271,7 @@ export default {
       }
       if (this.getDishType == "Bar") {
         titleChild = title.lastElementChild;
+        titleChild.style.marginTop = "0px";
       }
 
       titleChild.style.fontSize = this.setTitleSize[0];
@@ -375,11 +383,14 @@ export default {
     printout() {
       var newWindow = window.open();
       let stylesMain =
-        ".print{width:200px; height:200px; font-family:	Arial; margin-top:10px; border: 1px solid black}";
+        ".print{width:200px; height:170px; font-family:	Arial; margin-top:10px; }";
       let stylesIdSpan = " #span{display:flex; flex-direction: column;}";
-      let styleh3 = `.dishTitle{font-weight: 400; margin:30px 0px 2px 10px; font-size:${this.setTitleSize[1]} !important; max-width: 130px; text-align: center}`;
-      let styleh6 = "h6{margin: 5px 20px; font-size:9px;}";
-      let styleP = `p{font-size:${this.setDescrpSize[1]}; margin:10px; word-wrap: break-word; }`;
+      let styleh3 = `.titleSticker{font-weight: 400; margin:20px 0px 2px 5px; font-size:${this.setTitleSize[1]} !important; max-width: 130px; text-align: center}`;
+      let snackBarTitle =
+        ".snackBatTitle{margin : 18px 0 2px 10px; font-size:16px}";
+      let styleh6 =
+        ".h6Sticker{margin: 5px 30px 5px 0px; font-size:9px !important; text-align: center; }";
+      let styleP = `.desrcpSticker{font-size:${this.setDescrpSize[1]} !important; margin:5px 10px; word-wrap: break-word; max-width: 150px }`;
       let styleColdHeat = ".coldHeat{font-size:7px; margin:0px 2px 5px 10px}";
       let styleSpan = "span{font-size:7px; margin:0px 2px 2px 10px;}";
       let styleValue =
@@ -390,6 +401,7 @@ export default {
       newWindow.document.write(
         `<style>${
           stylesMain +
+          snackBarTitle +
           styleValue +
           styleInfo +
           styleColdHeat +

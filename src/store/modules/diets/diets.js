@@ -118,6 +118,17 @@ export default {
         dietTitle: "Wege",
         eat: ["ciepło", "zimno"],
         _id: "23423542341235"
+      },
+      {
+        date: "2021-03-02",
+        dish: "3",
+        description:
+          "Krajanka jajeczna z pstrągiem wędzonym i musztardą dijon, octowy ogórek z kopierkiem i siemieniem lnianym",
+        contains: "Młevbcvbko",
+        allergens: "łaktoguiza",
+        dietTitle: "Slim-Bez laktozy i glutenu",
+        eat: ["ciepło", "zimno"],
+        _id: "23423542341235"
       }
     ]
   },
