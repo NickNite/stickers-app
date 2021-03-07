@@ -9,6 +9,7 @@ Dimensions are based on the print data and are suitable for a specific model onl
 ---Created the first version of the design and layout of the application.
 ---Functions for processing the initial data for display on the client side have been developed.
 ---Created the first test mode for adding information to the server.
+---We use a test database for initial work.
 
 # v1.5
 
