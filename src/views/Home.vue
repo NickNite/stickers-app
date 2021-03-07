@@ -10,16 +10,16 @@
     </div>
     <div v-else class="home">
       <DietsList
-        v-bind:allDiets="getState.diets.dietList"
-        v-bind:snackBar="getState.snackBar.barList"
-        v-bind:redactMode="getState.redactMode"
+        :allDiets="getState.diets.dietList"
+        :snackBar="getState.snackBar.barList"
+        :redactMode="getState.redactMode"
       />
       <Sticker
-        v-bind:dietData="getState.diets.dietData"
-        v-bind:barData="getState.snackBar.barData"
-        v-bind:getActiveForm="getState.activeForm"
-        v-bind:getDishType="getState.dishType"
-        v-bind:redactMode="getState.redactMode"
+        :dietData="getState.diets.dietData"
+        :barData="getState.snackBar.barData"
+        :getActiveForm="getState.activeForm"
+        :getDishType="getState.dishType"
+        :redactMode="getState.redactMode"
       />
     </div>
     <div class="link"><router-link to="/addInfo">Dodaj nowe</router-link></div>
@@ -67,6 +67,7 @@ export default {
 }
 .link {
   margin: 20px auto 15px auto;
+  font-family: "Open Sans", sans-serif;
   a {
     text-decoration: none;
     color: white;

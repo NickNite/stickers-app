@@ -19,9 +19,13 @@ mongoose
   )
   .then(db => console.log("[OK] DB is connected"))
   .catch(err => console.error(err));
-
+//Подключаем  распознование  формата JSON
 app.use(express.json());
+
+//Подключаем  расшифровщик URL адресса
 app.use(express.urlencoded({ extended: false }));
+
+//Подключаем  логи
 app.use(morgan("dev"));
 
 //Подключаем Rest API

@@ -33,7 +33,6 @@ export default {
   name: "DietsList",
   props: ["allDiets", "snackBar", "redactMode"],
   data: () => ({
-    loader: true,
     dietsList: [],
     active: "",
     dishType: "Diet",
@@ -53,6 +52,7 @@ export default {
     },
   },
   computed: {
+    //Определяем и отрисовываем нужный список диет или бара
     setDiets() {
       let dietsList = [];
       if (this.dishType === "Diet") {
@@ -64,8 +64,12 @@ export default {
       }
       if (this.dishType === "Bar") {
         for (let bar of this.snackBar) {
-          for (let calories of bar.dietColories) {
-            dietsList.push(bar.dietTitle + " " + calories);
+          for (let calories of bar.barColories) {
+            if (calories == "") {
+              dietsList.push(bar.barTitle);
+            } else {
+              dietsList.push(bar.barTitle + " " + calories);
+            }
           }
         }
       }
@@ -92,7 +96,7 @@ export default {
   margin-left: -1px;
   width: 250px;
   border-right: 1px solid rgb(218, 218, 218);
-  height: 700px;
+  height: 750px;
   overflow-y: scroll;
 }
 ul {

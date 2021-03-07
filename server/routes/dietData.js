@@ -31,10 +31,11 @@ routerDietData.put("/:id", async (req, res) => {
     res.end();
   }
 });
-DietData.deleteMany({ date: "2021-03-03" }, function(err, result) {
-  if (err) return console.log("ERROR", err);
 
-  console.log("SUCCESS", result);
-});
+// DietData.deleteMany({ date: "2021-03-03" }, function(err, result) {
+//   if (err) return console.log("ERROR", err);
+
+//   console.log("SUCCESS", result);
+// });
 
 module.exports = routerDietData;

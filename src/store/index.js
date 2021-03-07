@@ -6,7 +6,6 @@ Vue.config.devtools = true;
 
 Vue.use(Vuex);
 
-//Прокидыват данные о блюдах , сделать эмуляцию базы данных для настройки и обработки информации!!!
 export default new Vuex.Store({
   state: {
     redactMode: false,
@@ -16,7 +15,6 @@ export default new Vuex.Store({
     submitStatus: ""
   },
   mutations: {
-    //тут прописываем логику
     changeDishType(state, typed) {
       state.dishType = typed;
     },

@@ -5,9 +5,7 @@
         {{ description }}
       </p>
       <p class="desrcpSticker" v-else>Wybierz danie i datę</p>
-      <!-- Доделать изменения из базы данных -->
       <div class="coldHeat">Spożywać na {{ eat.join("/") }}</div>
-      <!-- Доделать изменения из базы данных -->
       <div class="contains" id="span">
         <span><b>Zawiera:</b>&#8195;{{ contains || "----" }}</span>
         <span><b>Alergeny:</b>&#8195;{{ allergens || "----" }}</span>

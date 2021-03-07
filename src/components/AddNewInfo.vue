@@ -43,23 +43,35 @@
       </header>
       <AddNewDiet
         v-if="dishType === 'Diet'"
-        v-bind:onChangeInfo="onChangeInfo"
-        v-bind:submitStatus="submitStatus"
+        :onChangeInfo="onChangeInfo"
+        :submitStatus="submitStatus"
       />
       <AddNewSnackBar
         v-if="dishType === 'Bar'"
-        v-bind:onChangeInfo="onChangeInfo"
-        v-bind:submitStatus="submitStatus"
+        :onChangeInfo="onChangeInfo"
+        :submitStatus="submitStatus"
       />
       <footer class="footerAddInfo">
-        <b-form-checkbox
-          v-for="(diet, i) in getDietForm"
-          :key="{ diet } + i"
-          :id="diet"
-          :value="diet"
-          v-model="$v.dietTitle.$model"
-          >{{ diet }}</b-form-checkbox
-        >
+        <div class="formCheckbox" v-if="dishType === 'Diet'">
+          <b-form-checkbox
+            v-for="(diet, i) in getDietForm"
+            :key="{ diet } + i"
+            :id="diet"
+            :value="diet"
+            v-model="$v.dietTitle.$model"
+            >{{ diet }}</b-form-checkbox
+          >
+        </div>
+        <div class="formCheckbox" v-else-if="dishType === 'Bar'">
+          <b-form-checkbox
+            v-for="(diet, i) in getDietForm"
+            :key="{ diet } + i"
+            :id="diet"
+            :value="diet"
+            v-model="$v.barTitle.$model"
+            >{{ diet }}</b-form-checkbox
+          >
+        </div>
       </footer>
       <b-button
         class="buttonSend"
@@ -95,6 +107,7 @@ export default {
     date: "",
     dish: "",
     dietTitle: [],
+    barTitle: "",
     newInfo: {
       error: "ERROR",
     },
@@ -103,6 +116,7 @@ export default {
     date: { required },
     dish: { required },
     dietTitle: { required },
+    barTitle: { required },
   },
   created() {
     this.maxMinDate = this.limitDate;
@@ -158,7 +172,9 @@ export default {
       }
       if (this.dishType === "Bar") {
         for (let bar of this.snackBar) {
-          forms.push(bar.dietTitle);
+          for (let barColories of bar.barColories) {
+            forms.push(bar.barTitle + " " + barColories);
+          }
         }
       }
       return forms;
@@ -191,6 +207,7 @@ export default {
       }
     },
     onChangeInfo(data) {
+      //Проверка данных из дочерней компоненты
       if (data.error && data.error == "ERROR") {
         this.newInfo = data;
       } else {
@@ -199,6 +216,7 @@ export default {
     },
     addInfo() {
       if (this.dishType == "Diet") {
+        this.barTitle = "go";
         let diet = {
           date: this.date,
           dish: this.dish,
@@ -215,21 +233,24 @@ export default {
         ) {
           this.setSubmitStatus("ERROR");
         } else {
+          console.log(diet);
           this.setSubmitStatus("SUCCESS");
           this.addNewDiets(diet);
           this.date = "";
           this.dish = "";
           this.dietTitle = [];
+          this.barTitle = "";
         }
       }
       if (this.dishType == "Bar") {
+        this.dietTitle = ["go"];
         this.dish = "1";
         let bar = {
           date: this.date,
           description: this.newInfo.description,
           contains: this.newInfo.contains,
           composition: this.newInfo.composition,
-          dietTitle: this.dietTitle,
+          barTitle: this.barTitle,
           nutValue: this.newInfo.nutValue,
           energyValue: this.newInfo.energyValue,
           fats: this.newInfo.fats,
@@ -246,6 +267,7 @@ export default {
           this.setSubmitStatus("SUCCESS");
           this.addNewSnackBar(bar);
           this.date = "";
+          this.barTitle = "";
           this.dietTitle = [];
         }
       }
@@ -294,9 +316,6 @@ export default {
   }
 }
 .footerAddInfo {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
   border-top: 1px solid rgb(202, 202, 202);
   border-bottom: 1px solid rgb(202, 202, 202);
   padding: 20px 0px;
@@ -304,6 +323,11 @@ export default {
   div {
     margin: 5px;
   }
+}
+.formCheckbox {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 .buttonSend {
   margin: 20px auto 0px auto;

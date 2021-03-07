@@ -1,6 +1,4 @@
 import axios from "axios";
-// import hostName from "../../../../src/config";
-// import {createObjectDiet} from "../../../utils/objCreators";
 const hostName = "http://localhost:5000";
 
 export default {
@@ -8,7 +6,7 @@ export default {
     dietList: [
       {
         dietTitle: "Sport",
-        dietColories: [1200, 1500, 2000, 2500, 3000, 3500]
+        dietColories: ["1200", "1500", "2000", "2500", "3000", "3500"]
       },
       {
         dietTitle: "Slim",
@@ -92,21 +90,12 @@ export default {
       {
         date: "2021-03-02",
         dish: "1",
-        description: "fksdnsdvc",
-        contains: "qqMłevbcvbko",
-        allergens: "qqłaktoguiza",
+        description:
+          "Domowa granola z czekoladą i orzechami, jogurt agrestowo-pomarańczowy",
+        contains: "orzechy",
+        allergens: "mleko, gluten, migdały, orzeszki ziemne",
         dietTitle: "Sport",
-        eat: ["ciepło", "zimno"],
-        _id: "2342354234511211"
-      },
-      {
-        date: "2021-03-02",
-        dish: "2",
-        description: "Powesdlfksdnsdvc",
-        contains: "Młevbcvbko",
-        allergens: "łaktoguiza",
-        dietTitle: "Sport",
-        eat: ["ciepło", "zimno"],
+        eat: ["zimno"],
         _id: "23423542341215"
       },
       {
@@ -141,22 +130,25 @@ export default {
     }
   },
   actions: {
+    //Получаем названия и колории диет
     async getDiet({ commit, rootState }) {
       return await axios.get(`${hostName}/api/diet`).then(res => {
         commit("changeDiet", res.data);
         rootState.loading = false;
       });
     },
+    //Получаем данные о диетах
     async getDietData({ commit }) {
       return await axios.get(`${hostName}/api/dietdata`).then(res => {
         commit("changeDietData", res.data);
       });
     },
-
+    //Изменяем данные нужной диеты
     setDishInfo({ commit }, payload) {
       commit("test", "test");
       return axios.put(`${hostName}/api/dietdata/${payload.id}`, payload);
     },
+    //Добавляем новые данные в БД
     addNewDiets({ state }, payload) {
       if (payload.dietTitle.length >= 1) {
         for (let i = 0; i < payload.dietTitle.length; i++) {

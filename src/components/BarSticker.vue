@@ -24,7 +24,7 @@
           }}&#8195;g</span
         >
       </div>
-      <span class="info" v-if="form == 'Kanapka'">
+      <span class="info" v-if="barTitle == 'Kanapka'">
         * W celu zachowania walorów smakowych sugerujemy odgrewać w piecyku
       </span>
     </div>
@@ -138,7 +138,7 @@ export default {
     "barData",
     "redactMode",
     "selectedDate",
-    "form",
+    "barTitle",
     "getSnackBarData",
     "getDescrpLength",
   ],
@@ -186,7 +186,8 @@ export default {
         if (
           this.selectedDate &&
           this.barData.date == this.selectedDate &&
-          this.form
+          this.barTitle &&
+          this.barTitle == this.barData.barTitle
         ) {
           descr = this.barData.description;
           cont = this.barData.contains;
@@ -230,7 +231,7 @@ export default {
     redactData() {
       let dishInfo = {
         date: this.selectedDate,
-        dietTitle: this.form,
+        barTitle: this.barTitle,
         description: this.description,
         contains: this.contains,
         composition: this.composition,

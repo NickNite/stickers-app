@@ -60,20 +60,20 @@
           <div>
             <DietSticker
               v-if="getDishType == 'Diet'"
-              v-bind:dietData="getMyDiet()"
-              v-bind:redactMode="redactMode"
-              v-bind:selectedDate="selectedDate"
-              v-bind:dish="dish"
-              v-bind:form="form"
-              v-bind:getDescrpLength="getDescrpLength"
+              :dietData="getMyDiet()"
+              :redactMode="redactMode"
+              :selectedDate="selectedDate"
+              :dish="dish"
+              :form="form"
+              :getDescrpLength="getDescrpLength"
             />
             <BarSticker
               v-else-if="getDishType == 'Bar'"
-              v-bind:redactMode="redactMode"
-              v-bind:barData="getMyDiet()"
-              v-bind:selectedDate="selectedDate"
-              v-bind:form="form"
-              v-bind:getDescrpLength="getDescrpLength"
+              :redactMode="redactMode"
+              :barData="getMyDiet()"
+              :selectedDate="selectedDate"
+              :barTitle="dishTitle"
+              :getDescrpLength="getDescrpLength"
             />
           </div>
           <div class="footerInfo">
@@ -106,13 +106,19 @@
         </b-button>
       </div>
       <div class="print" v-if="!redactMode">
+        <PackagesSticker
+          v-if="getDishType == 'Diet'"
+          :getActiveForm="getActiveForm"
+          :titleLength="titleLength"
+        />
         <b-button
-          pill
-          block
+          class="buttPrint"
           @click="printout"
           title="Drukowanie naklejki"
           variant="info"
-          >Drukuj</b-button
+        >
+          <b-icon icon="printer-fill" aria-hidden="true"></b-icon>
+          Drukuj</b-button
         >
       </div>
     </body>
@@ -124,6 +130,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import DietSticker from "./DietSticker";
 import BarSticker from "./BarSticker";
+import PackagesSticker from "./PackagesSticker";
 import { mapActions } from "vuex";
 import _ from "lodash";
 
@@ -132,6 +139,7 @@ export default {
   components: {
     DietSticker,
     BarSticker,
+    PackagesSticker,
   },
   data: () => ({
     selectedDate: null,
@@ -303,13 +311,13 @@ export default {
       //Фильтруем информацию по форме диеты
       let sortDishArr;
       if (this.dietData && this.getDishType === "Diet") {
-        sortDishArr = this.dietData.filter((item) => {
-          return item.dietTitle == this.form;
+        sortDishArr = this.dietData.filter((i) => {
+          return i.dietTitle == this.form;
         });
       }
       if (this.barData && this.getDishType === "Bar") {
-        sortDishArr = this.barData.filter((item) => {
-          return item.dietTitle == this.form;
+        sortDishArr = this.barData.filter((i) => {
+          return i.barTitle == this.dishTitle;
         });
       }
 
@@ -318,36 +326,43 @@ export default {
     getFormList() {
       //Проверяем есть ли выбранная форма диеты из списка в формах БД для дальнейшего отображения даты
       let formArr;
+      let list = [];
       if (this.getDishType === "Diet") {
         formArr = _.uniqBy(this.dietData, "dietTitle");
+        for (let item of formArr) {
+          list.push(item.dietTitle);
+        }
+        let result = list.includes(this.form);
+        if (!result) {
+          this.selectedDate = null;
+        }
       }
       if (this.getDishType === "Bar") {
-        formArr = _.uniqBy(this.barData, "dietTitle");
-      }
-      let list = [];
-      for (let item of formArr) {
-        list.push(item.dietTitle);
-      }
-      let result = list.includes(this.form);
-      if (!result) {
-        this.selectedDate = null;
+        formArr = _.uniqBy(this.barData, "barTitle");
+        for (let item of formArr) {
+          list.push(item.barTitle);
+          let result = list.includes(this.dishTitle);
+          if (!result) {
+            this.selectedDate = null;
+          }
+        }
       }
     },
     getMyDiet() {
       //Получаем нужный итем из БД для отображения на наклейке
       if (this.getDishType === "Diet") {
-        let myDiet = this.dietData.filter((e) => {
+        let myDiet = this.dietData.filter((i) => {
           return (
-            e.date == this.selectedDate &&
-            e.dish == this.dish &&
-            e.dietTitle == this.form
+            i.date == this.selectedDate &&
+            i.dish == this.dish &&
+            i.dietTitle == this.form
           );
         });
         return myDiet[0];
       }
       if (this.getDishType === "Bar") {
-        let myBar = this.barData.filter((e) => {
-          return e.date == this.selectedDate && e.dietTitle == this.form;
+        let myBar = this.barData.filter((i) => {
+          return i.date == this.selectedDate && i.barTitle == this.dishTitle;
         });
         return myBar[0];
       }
@@ -375,15 +390,17 @@ export default {
         "Slim-Bez laktozy i glutenu"
       ) {
         newdishTitle = `Dieta o bardzo niskej zawartości laktozy i glutenu ${arrEnd}`;
+      } else if (this.form === "Gain") {
+        newdishTitle = "Gain";
       } else {
         newdishTitle = form;
       }
       return newdishTitle;
     },
     printout() {
-      var newWindow = window.open();
+      const newWindow = window.open();
       let stylesMain =
-        ".print{width:200px; height:170px; font-family:	Arial; margin-top:10px; }";
+        ".print{width:200px; height:170px; font-family:	Arial, sans-serif; margin-top:10px; }";
       let stylesIdSpan = " #span{display:flex; flex-direction: column;}";
       let styleh3 = `.titleSticker{font-weight: 400; margin:20px 0px 2px 5px; font-size:${this.setTitleSize[1]} !important; max-width: 130px; text-align: center}`;
       let snackBarTitle =
@@ -424,6 +441,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 .headerSticker {
   display: flex;
   margin: 40px 0px;
@@ -501,8 +519,14 @@ export default {
 }
 
 .print {
-  width: 200px;
-  margin: 50px auto;
+  margin: 10px auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  button {
+    height: 40px;
+    width: 200px;
+  }
 }
 .print:hover {
   cursor: pointer;
@@ -559,5 +583,8 @@ textarea {
   font-size: 12px;
   margin: -3px 0 3px 0;
   padding: 0px;
+}
+.buttPrint {
+  font-family: "Open Sans", sans-serif;
 }
 </style>

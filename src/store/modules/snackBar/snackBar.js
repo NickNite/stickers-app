@@ -1,37 +1,34 @@
 import axios from "axios";
-// import hostName from "../../../../src/config";
-// import {createObjectDiet} from "../../../utils/objCreators";
 const hostName = "http://localhost:5000";
 
 export default {
   state: {
     barList: [
       {
-        dietTitle: "Baton",
-        dietColories: ["1-M", "2-M"]
+        barTitle: "Baton",
+        barColories: ["1-M", "2-M"]
       },
       {
-        dietTitle: "Deser",
-        dietColories: ["M", "XL"]
+        barTitle: "Deser",
+        barColories: ["M", "XL"]
       },
       {
-        dietTitle: "Kanapka",
-        dietColories: [""]
+        barTitle: "Kanapka",
+        barColories: [""]
       },
       {
-        dietTitle: "Zupa",
-        dietColories: ["M", "XL"]
+        barTitle: "Zupa",
+        barColories: ["M", "XL"]
       }
     ],
     barData: [
       {
         date: "2021-03-01",
-        description:
-          "Bułka ardeńska z sałatką warzywną dfasdfsd dfsdf sdfsdf sdfsd weqrqwe sdfsd czxsdf",
+        description: "Bułka ardeńska z sałatką warzywną",
         contains: "orzechy, orzeszki ziemne",
         composition:
           "bułka(mąkka przenna), cieciorka, papryka, groszek, sałatka rzymśka",
-        dietTitle: "Kanapka",
+        barTitle: "Kanapka",
         nutValue: 205,
         energyValue: 393.7,
         fats: 9.8,
@@ -40,22 +37,23 @@ export default {
       },
       {
         date: "2021-03-01",
-        description: "asdasdasdasfas",
-        contains: "orzechy",
-        composition: "cieciorka, papryka, groszek, sałatka rzymśka",
-        dietTitle: "Deser",
-        nutValue: 125,
-        energyValue: 203.7,
-        fats: 1.3,
-        carbohydrates: 67.2,
-        protein: 2.2
+        description: "Sernik Królewski",
+        contains: "orzechy i orzeszki ziemne",
+        composition:
+          "ser twarogowy(mleko), mąka przenna, tłuszcz roślinny(serwatka z mleka), cukier, jaja, kakao, śmietana(mleko), proczek do pieczenia(mąka przenna), chia",
+        barTitle: "Deser M",
+        nutValue: "100",
+        energyValue: "291,4",
+        fats: "11,6",
+        carbohydrates: "38,2",
+        protein: "8,6"
       },
       {
         date: "2021-03-02",
         description: "Zupa",
         contains: "orzechy, orzeszki ziemne",
         composition: "papryka, groszek, sałatka rzymśka",
-        dietTitle: "Zupa",
+        barTitle: "Zupa XL",
         nutValue: 150,
         energyValue: 321.7,
         fats: 5.8,
@@ -90,34 +88,13 @@ export default {
       return axios.put(`${hostName}/api/snackbardata/${payload.id}`, payload);
     },
     addNewSnackBar({ state }, payload) {
-      if (payload.dietTitle.length >= 1) {
-        for (let i = 0; i < payload.dietTitle.length; i++) {
-          let newPayload = {
-            date: payload.date,
-            description: payload.description,
-            contains: payload.contains,
-            composition: payload.composition,
-            dietTitle: payload.dietTitle[i],
-            nutValue: payload.nutValue,
-            energyValue: payload.energyValue,
-            fats: payload.fats,
-            carbohydrates: payload.carbohydrates,
-            protein: payload.protein
-          };
-          let stop = state.barData.find(elem => {
-            return (
-              elem.date == payload.date &&
-              elem.dietTitle == newPayload.dietTitle
-            );
-          });
-          if (stop) {
-            console.log("ERROR: Juz jest takie danie", newPayload);
-          } else {
-            axios.post(`${hostName}/api/snackbardata`, newPayload);
-          }
-        }
+      let stop = state.barData.find(elem => {
+        return elem.date == payload.date && elem.barTitle == payload.barTitle;
+      });
+      if (stop) {
+        console.log("ERROR: Juz jest takie danie", payload);
       } else {
-        console.log("ERROR");
+        axios.post(`${hostName}/api/snackbardata`, payload);
       }
     }
   }
