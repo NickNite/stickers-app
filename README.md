@@ -1,24 +1,22 @@
-# stickers
+# This is an application for the automatic generation of labels for the products of a catering company.
 
-## Project setup
-```
-npm install
-```
+Text for labels is generated and formatted from the data.
+Automatically resize fonts to fit compactly on a specific sticker size.
+Dimensions are based on the print data and are suitable for a specific model only.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+# v1.0
 
-### Compiles and minifies for production
-```
-npm run build
-```
+---Created the first version of the design and layout of the application.
+---Functions for processing the initial data for display on the client side have been developed.
+---Created the first test mode for adding information to the server.
 
-### Lints and fixes files
-```
-npm run lint
-```
+# v1.5
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+---A database has been created to store information.
+---Rest API was created to work with the database.
+---Fixed bugs with information processing.
+
+# 2.0
+
+---Changes in the functionality of displaying data, some bugs fixed.
+---Work in progress .....
